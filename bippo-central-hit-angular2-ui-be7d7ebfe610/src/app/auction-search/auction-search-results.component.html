@@ -1,0 +1,81 @@
+<!-- Page Title -->
+<div id="page-title">
+    <div class="container">
+
+        <h1>Auctions for {{ county }} County</h1>
+        <p>
+            You found {{searchService.meta.totalElements}}
+            {{(1 != searchService.meta.totalElements) ? 'auctions' : 'auction'}}
+            searching for <strong>{{ county }} County</strong>.
+        </p>
+
+    </div>
+</div>
+<!-- /Page Title -->
+
+<!-- Main -->
+<div id="main" class="section-main">
+    <div class="container" style="padding-left: 10rem; padding-right: 10rem">
+
+        <!-- Main content -->
+        <div class="main-content" role="main">
+
+            <div class="widget table" style="width: 1140px; left: -14.75%; position: relative">
+                <table>
+                    <thead>
+                        <tr>
+                            <!--th>&nbsp;</th-->
+                            <th class="left">Watch</th>
+                            <th>Auc.&nbsp;Date</th>
+                            <th>Orig&nbsp;Loan</th>
+                            <th>Balance</th>
+                            <th class="left">Address</th>
+                            <th>Bed</th>
+                            <th>Bath</th>
+                            <th>GLA</th>
+                            <th>Year</th>
+                            <th>Lot</th>
+                            <th>&nbsp;</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                      <template ngFor let-property [ngForOf]="searchService.properties" let-i="index">
+                        <tr>
+                            <!--td class="picture">
+                                <div class="image"><img src="{{searchService.getFirstPhoto(property)}}"></div>
+                            </td-->
+                            <td class="watchlist-select"><a href="search-result-simple#" class="button icon watchlist">Add to watchlist</a></td>
+                            <td>{{formatDate(property.auction?.auctionDate)}}</td>
+                            <td>{{omitNullStringOrZero(property.auction?.rawData?.OriginalLoanAmount)}}</td>
+                            <td>{{omitNullStringOrZero(property.auction?.rawData?.LoanBalance)}}</td>
+                            <td class="left" style="font-size: 100%; font-weight: bold; padding-top: 0.2rem; padding-bottom: 0">
+                              <a class="clickable" style="color: #363636" (click)="viewPropertyByIndex(i)">{{property.address.line1}}<br/>{{property.address.line2}}</a>
+                            </td>
+                            <td>{{omitZero(property.auction?.rawData?.Bedrooms)}}</td>
+                            <td>{{omitZero(property.auction?.rawData?.Bathrooms)}}</td>
+                            <td>{{omitZero(property.auction?.rawData?.SquareFootage)}}</td>
+                            <td>{{omitZero(property.auction?.rawData?.YearBuilt)}}</td>
+                            <td>{{omitZero(property.auction?.rawData?.LotSize)}}</td>
+                            <td>
+                              <a (click)="togglePropertySummary(property)" class="clickable" *ngIf="property.auction?.rawData">
+                                {{ isPropertySummaryOpen(property) ? "Less" : "More" }}&nbsp;Info
+                              </a>
+                            </td>
+                        </tr>
+                        <tr class="listing-summary" [ngClass]="{active: isPropertySummaryOpen(property)}">
+                          <td colspan="9" *ngIf="property.auction?.rawData">
+                            <app-property-auctions *ngIf="isPropertySummaryOpen(property)" [property]="property"></app-property-auctions>
+                          </td>
+                        </tr>
+                      </template>
+                    </tbody>
+                </table>
+            </div>
+            <!--pagination-controls (pageChange)="page = $event; search()" ></pagination-controls-->
+
+        </div>
+        <!-- /Main content -->
+
+    </div>
+</div>
+<!-- /Main -->

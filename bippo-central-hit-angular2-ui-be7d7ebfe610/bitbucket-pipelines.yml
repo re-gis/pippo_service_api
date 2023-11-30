@@ -1,0 +1,56 @@
+pipelines:
+
+  default:
+    - step:
+        name: Npm Build
+        image: node:8.0.0
+        caches:
+          - node
+        script:
+          - npm install
+          - npm rebuild
+          - npm run stage:prod
+          - npm run build
+        artifacts:
+          - dist/**
+        #after-script:
+        #    # Collect checkstyle results, if any, and convert to Bitbucket Code Insights.
+        #  - pipe: atlassian/checkstyle-report:0.2.0
+
+    - step:
+        name: Build And Push Docker Image
+        services:
+          - docker
+        image: python:3.7.4-alpine3.10
+        caches:
+          - pip
+        script:
+          - apk update; apk add git
+          - pip3 install awscli
+          - IMAGE="127918707993.dkr.ecr.us-east-1.amazonaws.com/hit/hit-web"
+          - TAG=$(git tag --points-at HEAD)
+          - if [ -z "$TAG" ]; then TAG=$(git rev-parse --abbrev-ref HEAD); fi
+          - if [ "$TAG" = "master" ]; then TAG=master-$(git rev-parse --short HEAD); fi
+          - aws configure set aws_access_key_id "${AWS_KEY}"
+          - aws configure set aws_secret_access_key "${AWS_SECRET}"
+          - eval $(aws ecr get-login --no-include-email --region us-east-1 | sed 's;https://;;g')
+          - docker build -t $IMAGE:$TAG -f docker/Dockerfile.prod .
+          - docker push $IMAGE:$TAG
+
+    - step:
+        name: "Deploy to PROD (EKS)"
+        deployment: production
+        script:
+          - bash ./k8s/install-binaries.sh
+          - echo $KUBECONFIG | base64 -d > kube_config
+          - KUBECONFIG=$PWD/kube_config
+          - IMAGE="127918707993.dkr.ecr.us-east-1.amazonaws.com/hit/hit-web"
+          - TAG=$(git tag --points-at HEAD)
+          - if [ -z "$TAG" ]; then TAG=$(git rev-parse --abbrev-ref HEAD); fi
+          - if [ "$TAG" = "master" ]; then TAG=master-$(git rev-parse --short HEAD); fi
+          - cd k8s
+          - kustomize edit set image image:tag=${IMAGE}:${TAG}
+          - kustomize build > k8s.yml
+          - kubectl apply -f k8s.yml
+        artifacts:
+          - k8s/k8s.yml

@@ -1,0 +1,376 @@
+<div class="content full-width">
+  <div [ngBusy]="busy"></div>
+  <div class="widget map full-width" style="margin-top: -25px; overflow: hidden;" *ngIf="!compSelectionDisplayed">
+    <app-google-map [property]="propertyService.property"
+        [properties]="propertyService.propertyComps"
+        [altProperties]="propertyService.propertyCompsBackground"
+        [altToggle]="altPropertyToggle"
+        [selected]="propertyService.propertyCompsSelectedList"
+        [active]="isActive() && propertyService.propertyComps && (propertyService.propertyComps.length > 0)"
+        [compmeta]="propertyService.propertyCompsMeta"
+        [shrink]="mapShrink"
+        (select)="togglePropertySummary($event)">
+    </app-google-map>
+    <div id="compalator-branding">COMPALATOR™</div>
+    <app-property-slideout tabLocation="right" topPos="0px" rightPos="0px"
+        [active]="isActive() && propertyService.getListPrice()" (toggle)="setMapShrink($event)">
+      <a class="handle" href="javascript:void(0)"><span>Property Info</span></a>
+      <div class="info">{{propertyService.getCurrentProperty().address?.line1}}<span>{{propertyService.getCurrentProperty().address?.line2}}</span></div>
+      <div class="info">{{propertyService.getRepairConditionName(propertyService.getFlipRepairsCondition())}}<span>Condition</span></div>
+      <div class="info">{{propertyService.getCurrentProperty().mls?.statusShortValue}}<span>Status</span></div>
+      <div class="info">${{propertyService.getListPrice()}} <span>List Price</span></div>
+      <br>
+      <ol class="tags featured">
+        <li><strong>{{propertyService.getCurrentProperty().building?.rooms?.beds}}</strong> Bed</li>
+        <li><strong>{{propertyService.getCurrentProperty().building?.rooms?.bathsTotal}}</strong> Bath</li>
+        <li><strong>{{propertyService.getGarageSpaces()}}</strong> Car</li>
+        <li [ngClass]="{'dimmed': !propertyService.getCurrentProperty().lot?.poolInd || ('0' == propertyService.getCurrentProperty().lot?.poolInd), 'more-info': propertyService.getCurrentProperty().lot?.poolInd && ('0' != propertyService.getCurrentProperty().lot?.poolInd)}">
+            <strong>Pool</strong>
+            <div><p>{{propertyService.getCurrentProperty().lot?.poolType}}</p></div>
+        </li>
+        <li [ngClass]="{'dimmed': propertyService.getCurrentProperty().mls?.hoaType != 'Mandatory', 'more-info': propertyService.getCurrentProperty().mls?.hoaType != 'None' && propertyService.getCurrentProperty().mls?.hoaType != ''}">
+            <strong>HOA</strong>
+            <div>
+              <p>{{propertyService.getCurrentProperty().mls?.hoaType}} Membership</p>
+              <p>{{propertyService.getCurrentProperty().mls?.hoaPeriod}} Fee: {{propertyService.getCurrentProperty().mls?.hoaFee | currency:'USD':true:'1.0-2'}}</p>
+            </div>
+        </li>
+        <li [ngClass]="{'more-info': propertyService.getCurrentProperty().building?.summary?.yearBuiltEffective}">
+            Built in: <strong>{{propertyService.getCurrentProperty().summary?.yearBuilt}}</strong>
+            <div><p>Effective Year Built: {{propertyService.getCurrentProperty().building?.summary?.yearBuiltEffective}}</p></div>
+        </li>
+        <li class="more-info">
+          <strong>{{propertyService.getCurrentProperty().building?.size?.livingSize | number : '1.0-0'}}</strong> SQ FT <strong> Living</strong>
+          <div>
+            <p>TOT BLDG: <b>{{propertyService.getFootageSourceDescription()}}</b></p>
+          </div>
+        </li>
+        <li class="more-info">
+            <strong>{{propertyService.getCurrentProperty().lot?.lotSizeInSQFT | number : '1.0-0'}}</strong> SQ FT LOT
+            <div><p>{{propertyService.getCurrentProperty().lot?.lotSizeInAcres | number : '1.0-4'}} acres</p></div>
+        </li>
+        <li class="more-info" *ngIf="propertyService.getCurrentProperty().summary?.propSubType">
+            <strong>{{propertyService.getCurrentProperty().summary?.propLandUse}}</strong>
+            <div>{{propertyService.getCurrentProperty().summary?.propSubType}}</div>
+        </li>
+      </ol>
+      <br>
+      <ol class="tags">
+        <li class="clickable more-info" (click)="toggleCompsMapAlt()">
+          Toggle Non-Comp Solds
+          <div style="width: 215px">Toggle between displaying all the solds in this search, or only relevant comps.</div>
+        </li>
+      </ol>
+    </app-property-slideout>
+    <!--app-property-slideout tabLocation="right" topPos="200px" leftPos="0px"
+        [active]="true" (toggle)="toggleCompsMapAlt($event)" *ngIf="type == 'arv'">
+      <a class="handle" href="javascript:void(0)"><span>Show All Solds</span></a>
+      <div>Hide All Solds</div>
+    </app-property-slideout-->
+    <!--app-property-slideout tabLocation="left" topPos="10px"
+        leftPos="20px" [active]="isActive() && propertyService.getListPrice()"
+        (toggle)="setMapShrink($event)">
+        <a class="handle" href="javascript:void(0)"><span>Other Info</span></a>
+        There Is Stuff In Here
+    </app-property-slideout-->
+  </div>
+  <div id="compalator-cards" class="widget full-width" style="user-select: none" *ngIf="compSelectionDisplayed && lastCachedId">
+    <div class="compa-scroll" style="margin-right: 5px" (click)="scrollCompsLeft()" [ngClass]="{'compa-scroll-hidden': compScrollIndex < 1}">&lt;</div>
+    <template ngFor let-property [ngForOf]="columnProperties" let-i="index">
+      <div class="compa-card" draggable="true" (dragstart)="onDragStart($event, i)" (dragend)="onDragEnd($event)" *ngIf="i >= compScrollIndex && i < compScrollIndex + 5"
+          [ngClass]="{'compa-card-selected': getUsageType(property) >= 0, 'compa-superior': 's' == property.rating?.type, 'compa-equal': 'e' == property.rating?.type, 'compa-inferior': 'i' == property.rating?.type}">
+        <img class="compa-card-image" draggable="false" src="{{propertyService.getFirstPhoto(property)}}">
+        <h2 class="compa-image-anno">{{i + 1}} / {{columnCount}}</h2>
+        <div class="info">
+          <span class="addr"><span><strong>{{propertyService.getPropertyData(property).address?.line1}}</strong><br><small>{{propertyService.getPropertyData(property).address?.line2}}</small></span></span>
+          <span class="price"><span><strong>$</strong>{{propertyService.getListPrice(property)}}</span> list</span>
+          <span class="dist"><span><strong>{{property.distance | number: '1.0-3'}}</strong> mi. from subject</span></span>
+          <span class="space">
+            <span><strong>{{propertyService.getPropertyData(property, 'mls').building?.rooms?.beds}}</strong> Bed</span>
+            <span *ngIf="propertyService.getPropertyData(property, 'mls').building?.rooms?.bathsFull">
+              <strong>{{propertyService.getPropertyData(property, 'mls').building?.rooms?.bathsFull}}</strong>
+              <strong *ngIf="propertyService.getPropertyData(property, 'mls').building?.rooms?.bathsHalf && propertyService.getPropertyData(property, 'mls').building?.rooms?.bathsHalf > 0">
+                {{propertyService.getPropertyData(property, 'mls').building?.rooms?.bathsHalf}}/2
+              </strong>
+              Bath
+            </span>
+            <span *ngIf="!propertyService.getPropertyData(property, 'mls').building?.rooms?.bathsFull"><strong>{{propertyService.getPropertyData(property, 'mls').building?.rooms?.bathsTotal}}</strong> Baths</span>
+            <span><strong>{{propertyService.getGarageSpaces(property)}}</strong> Car</span>
+          </span>
+          <span class="lot">
+            <span><strong>{{(propertyService.getPropertyData(property, 'mls').building?.size?.livingSize || propertyService.getPropertyData(property, 'mls').building?.size?.bldgSize) | number : '1.0-0'}}</strong> sqft</span>
+            <span><strong>{{propertyService.getPropertyData(property, 'mls').lot?.lotSizeInSQFT | number : '1.0-0'}}</strong> sqft lot</span>
+          </span>
+          <span class="build"><span>Built in: <strong>1985</strong></span></span>
+          <span class="rating" [ngSwitch]="property.rating?.type">
+            <!--span [innerHTML]="formatCompRatingStarEntry(property.rating?.best?.overall)"></span-->
+            <span><strong>{{formatCompRating(property)}}</strong></span>
+            <span *ngSwitchCase="'s'">Larger</span>
+            <span *ngSwitchCase="'e'">Similar Size</span>
+            <span *ngSwitchCase="'i'">Smaller</span>
+          </span>
+        </div>
+      </div>
+    </template>
+    <div class="compa-scroll" style="margin-left: 5px" (click)="scrollCompsRight()" [ngClass]="{'compa-scroll-hidden': compScrollIndex >= columnCount - 5}">&gt;</div>
+  </div>
+  <div class="widget notice full-width property-slideout" style="visibility: hidden" *ngIf="columnProperties">
+    <h2 style="visibility: visible">
+      <div style="color: #525252; display: inline-block; font-size: 110%; width: 20%">
+        COMPALATOR™
+        <span style="display: inline-block; color: #dc4128">{{compalatorValue | currency:'USD':true:'1.0-0'}}</span>
+      </div>
+      <ol class="tags" style="float: right">
+        <li>{{nSolds}} solds</li>
+        <li>{{columnCount}} relevant</li>
+        <li>{{nDays}} days</li>
+        <li>{{nRadius | number:'1.1-1'}} mile radius</li>
+      </ol>
+      <ol class="tags" style="float: right" *ngIf="showCompsBreakdown">
+        <li>{{nSuperior}} larger</li>
+        <li>{{nEqual}} similar size</li>
+        <li>{{nInferior}} smaller</li>
+      </ol>
+    </h2>
+  </div>
+  <div class="widget table narrow full-width" *ngIf="columnProperties && lastCachedId">
+    <table>
+      <thead>
+        <tr>
+          <th>&nbsp;</th>
+          <th>
+            Subject
+            <!--a class="clickable" (click)="columnPrevPage()" *ngIf="columnCount > 3 && columnStart > 0">&lt;</a>
+            <a class="clickable" (click)="columnNextPage()" *ngIf="columnCount > 3 && columnStart < columnCount - 3">&gt;</a-->
+          </th>
+          <template ngFor let-property [ngForOf]="columnPage" let-i="index">
+            <th colspan="2" [ngSwitch]="property.rating?.type" (drop)="onDrop($event, i)" (dragover)="onDragOver($event)">
+              <span *ngSwitchCase="'s'">Larger</span>
+              <span *ngSwitchCase="'e'">Similar Size</span>
+              <span *ngSwitchCase="'i'">Smaller</span>
+              <span *ngSwitchDefault>Sold {{i + 1}}</span>
+            </th>
+          </template>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr style="height: 120px" [ngClass]="{'compa-dragover': compDragging}">
+          <td>&nbsp;</td>
+          <td class="picture initial-width"><div class="image"><img src="{{propertyService.getFirstPhoto(propertyService.getCurrentProperty())}}"></div></td>
+          <template ngFor let-property [ngForOf]="columnPage" let-i="index">
+            <td class="picture initial-width compa-dragtarget" colspan="2" (drop)="onDrop($event, i)" (dragover)="onDragOver($event)">
+              <div class="image"><img src="{{propertyService.getFirstPhoto(property)}}"></div>
+            </td>
+          </template>
+          <td></td>
+        </tr>
+        <tr>
+          <td class="fixed-td"><span>Address</span></td>
+          <td class="fixed-td"><span>{{propertyService.getCurrentProperty().address?.line1}}</span><br>{{propertyService.getCurrentProperty().address?.line2}}</td>
+          <template ngFor let-property [ngForOf]="columnPage" let-i="index">
+            <td colspan="2" (drop)="onDrop($event, i)" (dragover)="onDragOver($event)" class="fixed-td"><span>{{propertyService.getPropertyData(property).address?.line1}}</span><br>{{propertyService.getPropertyData(property).address?.line2}}</td>
+          </template>
+          <td></td>
+        </tr>
+        <tr *ngIf="propertyService.propertyCompsMeta.hasRatings">
+          <td>Rating</td>
+          <td>&nbsp;</td>
+          <template ngFor let-property [ngForOf]="columnPage" let-i="index">
+            <td colspan="2" (drop)="onDrop($event, i)" (dragover)="onDragOver($event)" class="fixed-td">
+              <span>
+                <div class="calctooltip" style="margin-right: 5px">
+                  {{ formatCompRating(property) }}
+                  <span class="calctooltiptext" style="font-size: 72%; width: 140px; text-align: right; padding-right: 10px" [innerHTML]="formatCompRatingStars(property.rating?.best)"></span>
+                </div>
+                {{ formatCompRatingLabel(property) }}
+              </span>
+            </td>
+          </template>
+          <td>&nbsp;</td>
+        </tr>
+        <tr>
+          <td class="fixed-td"><span>Proximity to subject</span></td>
+          <td>&nbsp;</td>
+          <template ngFor let-property [ngForOf]="columnPage" let-i="index">
+            <td colspan="2" (drop)="onDrop($event, i)" (dragover)="onDragOver($event)" class="fixed-td"><span>{{property.distance}} mi.</span></td>
+          </template>
+          <td></td>
+        </tr>
+        <tr>
+          <td class="fixed-td"><span>List price</span></td>
+          <td class="fixed-td"><span>${{propertyService.getListPrice(propertyService.getCurrentProperty())}}</span></td>
+          <template ngFor let-property [ngForOf]="columnPage" let-i="index">
+            <td colspan="2" (drop)="onDrop($event, i)" (dragover)="onDragOver($event)" class="fixed-td"><span>${{propertyService.getListPrice(property)}}</span></td>
+          </template>
+          <td></td>
+        </tr>
+        <tr>
+          <td class="fixed-td"><span>Price per GLA</span></td>
+          <td class="fixed-td"><span>${{pricePerFootage(propertyService.getListPrice(propertyService.getCurrentProperty()),
+              propertyService.getCurrentProperty('mls').building?.size?.bldgSize || propertyService.getCurrentProperty().building?.size?.bldgSize) | number:'1.0-0'}}</span></td>
+          <template ngFor let-property [ngForOf]="columnPage" let-i="index">
+            <td colspan="2" (drop)="onDrop($event, i)" (dragover)="onDragOver($event)" class="fixed-td"><span>
+              <div class="calctooltip">
+                ${{pricePerFootage(propertyService.getListPrice(property), propertyService.getPropertyData(property, 'mls').building?.size?.bldgSize) | number:'1.0-0'}}
+                <span class="calctooltiptext" style="width: 100px">
+                  ${{pricePerFootage(propertyService.getClosePrice(property), propertyService.getPropertyData(property, 'mls').building?.size?.bldgSize) | number:'1.0-0'}}
+                </span>
+              </div>
+            </span></td>
+          </template>
+          <td></td>
+        </tr>
+        <tr>
+          <td class="fixed-td"><span>Year Built</span></td>
+          <td class="fixed-td"><span>{{subjectValues.yearBuilt}}</span></td>
+          <template ngFor let-property [ngForOf]="columnPage" let-i="index">
+            <td class="fixed-td" (drop)="onDrop($event, i)" (dragover)="onDragOver($event)"><span>{{property.about.yearBuilt}}</span></td>
+            <td class="editable-td" (drop)="onDrop($event, i)" (dragover)="onDragOver($event)"><div>$</div><span contenteditable="true" [(contenteditableModel)]="property.adjustment.yearBuilt.adjustmentValue" (blur)="changedCompAdjustment('yearBuilt', i)" *ngIf="!dirtyAdjustments.yearBuilt"></span><span *ngIf="dirtyAdjustments.yearBuilt">...</span></td>
+          </template>
+          <td></td>
+        </tr>
+        <tr>
+          <td class="fixed-td"><span>Class</span></td>
+          <td class="fixed-td"><span>{{propertyService.getQualityName(subjectValues.quality)}}</span></td>
+          <template ngFor let-property [ngForOf]="columnPage" let-i="index">
+            <td class="select-td" (drop)="onDrop($event, i)" (dragover)="onDragOver($event)">
+              <select [ngModel]="property.about.quality" (ngModelChange)="selectQuality($event, i)">
+                <option [ngValue]="0">Estate</option>
+                <option [ngValue]="1">Custom</option>
+                <option [ngValue]="2">Semi Custom</option>
+                <option [ngValue]="3">Production</option>
+                <option [ngValue]="4">Economy</option>
+                <option [ngValue]="5">Basic</option>
+              </select>
+            </td>
+            <td class="editable-td" (drop)="onDrop($event, i)" (dragover)="onDragOver($event)"><div>$</div><span contenteditable="true" [(contenteditableModel)]="property.adjustment.quality.adjustmentValue" (blur)="changedCompAdjustment('quality', i)" *ngIf="!dirtyAdjustments.quality"></span><span *ngIf="dirtyAdjustments.quality">...</span></td>
+          </template>
+          <td></td>
+        </tr>
+        <tr>
+          <td class="fixed-td"><span>Condition</span></td>
+          <td class="fixed-td" *ngIf="subjectValues.condition >= 0"><span>{{propertyService.getRepairConditionName(subjectValues.condition)}}</span></td>
+          <td class="fixed-td" *ngIf="subjectValues.condition < 0">&mdash;</td>
+          <template ngFor let-property [ngForOf]="columnPage" let-i="index">
+            <td class="select-td" (drop)="onDrop($event, i)" (dragover)="onDragOver($event)">
+              <select [ngModel]="property.about.condition" (ngModelChange)="selectCondition($event, i)">
+                <option [ngValue]="0">Excellent</option>
+                <option [ngValue]="1">Good</option>
+                <option [ngValue]="2">Above Avg</option>
+                <option [ngValue]="3">Average</option>
+                <option [ngValue]="4">Fair</option>
+                <option [ngValue]="5">Poor</option>
+              </select>
+            </td>
+            <td class="editable-td" (drop)="onDrop($event, i)" (dragover)="onDragOver($event)"><div>$</div><span contenteditable="true" [(contenteditableModel)]="property.adjustment.condition.adjustmentValue" (blur)="changedCompAdjustment('condition', i)" *ngIf="!dirtyAdjustments.condition"></span><span *ngIf="dirtyAdjustments.condition">...</span></td>
+          </template>
+          <td></td>
+        </tr>
+        <tr>
+          <td class="fixed-td"><span>View</span></td>
+          <td class="select-td">
+            <select [ngModel]="subjectValues.view" (ngModelChange)="selectView($event, -1)">
+              <option [ngValue]="'ben'">Beneficial</option>
+              <option [ngValue]="'neu'">Neutral</option>
+              <option [ngValue]="'adv'">Adverse</option>
+            </select>
+          </td>
+          <template ngFor let-property [ngForOf]="columnPage" let-i="index">
+            <td class="select-td" (drop)="onDrop($event, i)" (dragover)="onDragOver($event)">
+              <select [ngModel]="property.about.view" (ngModelChange)="selectView($event, i)">
+                <option [ngValue]="'ben'">Beneficial</option>
+                <option [ngValue]="'neu'">Neutral</option>
+                <option [ngValue]="'adv'">Adverse</option>
+              </select>
+            </td>
+            <td class="editable-td" (drop)="onDrop($event, i)" (dragover)="onDragOver($event)"><div>$</div><span contenteditable="true" [(contenteditableModel)]="property.adjustment.view.adjustmentValue" (blur)="changedCompAdjustment('view', i)" *ngIf="!dirtyAdjustments.view"></span><span *ngIf="dirtyAdjustments.view">...</span></td>
+          </template>
+          <td></td>
+        </tr>
+        <tr>
+          <td class="fixed-td"><span>Bedrooms</span></td>
+          <td class="editable-td editable-td-wide"><span contenteditable="true" [(contenteditableModel)]="subjectValues.bedrooms" (blur)="changedSubjectValue('bedrooms')"></span></td>
+          <template ngFor let-property [ngForOf]="columnPage" let-i="index">
+            <td class="editable-td editable-td-wide" (drop)="onDrop($event, i)" (dragover)="onDragOver($event)"><span contenteditable="true" [(contenteditableModel)]="property.about.bedrooms" (blur)="changedCompValue('bedrooms', i)"></span></td>
+            <td class="editable-td" (drop)="onDrop($event, i)" (dragover)="onDragOver($event)"><div>$</div><span contenteditable="true" [(contenteditableModel)]="property.adjustment.bedrooms.adjustmentValue" (blur)="changedCompAdjustment('bedrooms', i)" *ngIf="!dirtyAdjustments.bedrooms"></span><span *ngIf="dirtyAdjustments.bedrooms">...</span></td>
+          </template>
+          <td></td>
+        </tr>
+        <tr>
+          <td class="fixed-td"><span>Full Baths</span></td>
+          <td class="editable-td editable-td-wide"><span contenteditable="true" [(contenteditableModel)]="subjectValues.bathsFull" (blur)="changedSubjectValue('bathsFull')"></span></td>
+          <template ngFor let-property [ngForOf]="columnPage" let-i="index">
+            <td class="editable-td editable-td-wide" (drop)="onDrop($event, i)" (dragover)="onDragOver($event)"><span contenteditable="true" [(contenteditableModel)]="property.about.bathsFull" (blur)="changedCompValue('bathsFull', i)"></span></td>
+            <td class="editable-td" (drop)="onDrop($event, i)" (dragover)="onDragOver($event)"><div>$</div><span contenteditable="true" [(contenteditableModel)]="property.adjustment.bathsFull.adjustmentValue" (blur)="changedCompAdjustment('bathsFull', i)" *ngIf="!dirtyAdjustments.bathsFull"></span><span *ngIf="dirtyAdjustments.bathsFull">...</span></td>
+          </template>
+          <td></td>
+        </tr>
+        <tr>
+          <td class="fixed-td"><span>Half Baths</span></td>
+          <td class="editable-td editable-td-wide"><span contenteditable="true" [(contenteditableModel)]="subjectValues.bathsHalf" (blur)="changedSubjectValue('bathsHalf')"></span></td>
+          <template ngFor let-property [ngForOf]="columnPage" let-i="index">
+            <td class="editable-td editable-td-wide" (drop)="onDrop($event, i)" (dragover)="onDragOver($event)"><span contenteditable="true" [(contenteditableModel)]="property.about.bathsHalf" (blur)="changedCompValue('bathsHalf', i)"></span></td>
+            <td class="editable-td" (drop)="onDrop($event, i)" (dragover)="onDragOver($event)"><div>$</div><span contenteditable="true" [(contenteditableModel)]="property.adjustment.bathsHalf.adjustmentValue" (blur)="changedCompAdjustment('bathsHalf', i)" *ngIf="!dirtyAdjustments.bathsHalf"></span><span *ngIf="dirtyAdjustments.bathsHalf">...</span></td>
+          </template>
+          <td></td>
+        </tr>
+        <tr>
+          <td class="fixed-td"><span>Gross Living Area</span></td>
+          <td class="fixed-td"><span>{{subjectValues.footage}}</span></td>
+          <template ngFor let-property [ngForOf]="columnPage" let-i="index">
+            <td class="fixed-td" (drop)="onDrop($event, i)" (dragover)="onDragOver($event)"><span>{{property.about.footage}}</span></td>
+            <td class="editable-td" (drop)="onDrop($event, i)" (dragover)="onDragOver($event)"><div>$</div><span contenteditable="true" [(contenteditableModel)]="property.adjustment.footage.adjustmentValue" (blur)="changedCompAdjustment('footage', i)" *ngIf="!dirtyAdjustments.footage"></span><span *ngIf="dirtyAdjustments.footage">...</span></td>
+          </template>
+          <td></td>
+        </tr>
+        <tr>
+          <td class="fixed-td"><span>Lot Size</span></td>
+          <td class="fixed-td"><span>{{subjectValues.lot}}</span></td>
+          <template ngFor let-property [ngForOf]="columnPage" let-i="index">
+            <td class="fixed-td" (drop)="onDrop($event, i)" (dragover)="onDragOver($event)"><span>{{property.about.lot}}</span></td>
+            <td class="editable-td" (drop)="onDrop($event, i)" (dragover)="onDragOver($event)"><div>$</div><span contenteditable="true" [(contenteditableModel)]="property.adjustment.lot.adjustmentValue" (blur)="changedCompAdjustment('lot', i)" *ngIf="!dirtyAdjustments.lot"></span><span *ngIf="dirtyAdjustments.lot">...</span></td>
+          </template>
+          <td></td>
+        </tr>
+        <tr>
+          <td class="fixed-td"><span>Garages</span></td>
+          <td class="editable-td editable-td-wide"><span contenteditable="true" [(contenteditableModel)]="subjectValues.garages" (blur)="changedSubjectValue('garages')"></span></td>
+          <template ngFor let-property [ngForOf]="columnPage" let-i="index">
+            <td class="editable-td editable-td-wide" (drop)="onDrop($event, i)" (dragover)="onDragOver($event)"><span contenteditable="true" [(contenteditableModel)]="property.about.garages" (blur)="changedCompValue('garages', i)"></span></td>
+            <td class="editable-td" (drop)="onDrop($event, i)" (dragover)="onDragOver($event)"><div>$</div><span contenteditable="true" [(contenteditableModel)]="property.adjustment.garages.adjustmentValue" (blur)="changedCompAdjustment('garages', i)" *ngIf="!dirtyAdjustments.garages"></span><span *ngIf="dirtyAdjustments.garages">...</span></td>
+          </template>
+          <td></td>
+        </tr>
+        <tr>
+          <td class="fixed-td"><span>Net Adjustment</span></td>
+          <td>&nbsp;</td>
+          <template ngFor let-property [ngForOf]="columnPage" let-i="index">
+            <td (drop)="onDrop($event, i)" (dragover)="onDragOver($event)">&nbsp;</td>
+            <td class="fixed-td" (drop)="onDrop($event, i)" (dragover)="onDragOver($event)"><span>{{property.adjustment?.netAdjustment | currency:'USD':true:'1.0-0'}}</span></td>
+          </template>
+          <td></td>
+        </tr>
+        <tr>
+          <td class="fixed-td"><span>Adjusted Value</span></td>
+          <td>&nbsp;</td>
+          <template ngFor let-property [ngForOf]="columnPage" let-i="index">
+            <td (drop)="onDrop($event, i)" (dragover)="onDragOver($event)">&nbsp;</td>
+            <td class="fixed-td" (drop)="onDrop($event, i)" (dragover)="onDragOver($event)"><span>{{property.adjustment?.postAdjustment | currency:'USD':true:'1.0-0'}}</span></td>
+          </template>
+          <td></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="widget notice full-width property-slideout" style="visibility: hidden" *ngIf="columnProperties">
+    <h2 style="visibility: visible">
+      <div style="color: #525252; display: inline-block; font-size: 110%">
+        COMPALATOR™
+        <span style="display: inline-block; color: #dc4128">{{compalatorValue | currency:'USD':true:'1.0-0'}}</span>
+      </div>
+      <button type="button" (click)="saveCompalator()" [disabled]="savingState > 0 && savingState < 4" style="float: right; padding: 4px 20px">{{getSaveDescription()}}</button>
+      <button type="button" (click)="togglePrintableMode()" style="float: right; padding: 4px 20px; margin-right: 20px">Print</button>
+    </h2>
+  </div>
+</div>

@@ -1,0 +1,651 @@
+<div class="tabswrapper">
+  <ul class="infotabs general">
+    <li class="tab" data-pane-id="pane2">Location</li>
+    <li class="tab" data-pane-id="pane1">Parcel</li>
+    <li class="tab" data-pane-id="pane4">Improvement</li>
+    <li class="tab" data-pane-id="pane5">Construction</li>
+    <li class="tab" data-pane-id="pane6">Tax</li>
+    <li class="tab" data-pane-id="pane7">Value</li>
+    <li class="tab" data-pane-id="pane8">Deed &amp; MLS</li>
+  </ul>
+  <div class="panes accordion" style="border: none">
+    <div class="inner_panes">
+      <div class="pane">
+        <div class="inner_pane">
+          <div class="widget table striped narrow full-width">
+            <table>
+              <thead>
+                <tr>
+                  <th>Tax Field</th>
+                  <th width="90%">Value</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Address Line One</td>
+                  <td>{{getProperty('tax').address?.line1}}</td>
+                </tr>
+                <tr>
+                  <td>Address Line Two</td>
+                  <td>{{getProperty('tax').address?.line2}}</td>
+                </tr>
+                <tr>
+                  <td>Locality</td>
+                  <td>{{getProperty('tax').address?.locality}}</td>
+                </tr>
+                <tr>
+                  <td>Country Subdivision</td>
+                  <td>{{getProperty('tax').address?.countrySubd}}</td>
+                </tr>
+                <tr>
+                  <td>Postal Code One</td>
+                  <td>{{getProperty('tax').address?.postal1}}</td>
+                </tr>
+                <tr>
+                  <td>Postal Code Two</td>
+                  <td>{{getProperty('tax').address?.postal2}}</td>
+                </tr>
+                <tr>
+                  <td>Postal Code Three</td>
+                  <td>{{getProperty('tax').address?.postal3}}</td>
+                </tr>
+                <tr>
+                  <td>Country</td>
+                  <td>{{getProperty('tax').address?.country}}</td>
+                </tr>
+                <tr>
+                  <td>Country Secondary Subdivision</td>
+                  <td>{{getProperty('tax').area?.countrysecsubd}}</td>
+                </tr>
+                <tr>
+                  <td>Address Match</td>
+                  <td>{{getProperty('tax').address?.matchCode}}</td>
+                </tr>
+                <tr>
+                  <td>Location Accuracy</td>
+                  <td>{{getProperty('tax').location?.accuracy}}</td>
+                </tr>
+                <tr>
+                  <td>Location Type</td>
+                  <td>{{getProperty('tax').area?.locType ? getProperty('tax').area?.locType  : 'Not Identified in Tax'}}</td>
+                </tr>
+                <tr>
+                  <td>Subdivision</td>
+                  <td>{{getProperty('tax').area?.subdName}}</td>
+                </tr>
+                <tr>
+                  <td>Subdivision Tract</td>
+                  <td>{{getProperty('tax').area?.subdTractNum  ? getProperty('tax').area?.subdTractNum : 'Not Identified in Tax'}}</td>
+                </tr>
+                <tr>
+                  <td>Block Num</td>
+                  <td>{{getProperty('tax').area?.blockNum}}</td>
+                </tr>
+                <tr>
+                  <td>Lot Num</td>
+                  <td>{{getProperty('tax').lot?.lotNum}}</td>
+                </tr>
+                <tr>
+                  <td>Year Built</td>
+                  <td>{{getProperty('tax').summary?.yearBuilt}}</td>
+                </tr>
+                <tr>
+                  <td>Effective Year Built</td>
+                  <td>{{getProperty('tax').building?.summary?.yearBuiltEffective}}</td>
+                </tr>
+                <tr>
+                  <td>Census Place</td>
+                  <td>Coming Soon</td>
+                </tr>
+                <tr>
+                  <td>&mdash;</td>
+                  <td>Coming Soon</td>
+                </tr>
+                <tr>
+                  <td>&mdash;</td>
+                  <td>Coming Soon</td>
+                </tr>
+                <tr>
+                  <td>Latitude, Longitude</td>
+                  <td>{{getProperty('tax').location?.latitude}}, {{getProperty('tax').location?.longitude}}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="pane">
+        <div class="inner_pane">
+          <div class="widget table striped narrow full-width">
+            <table>
+              <thead>
+                <tr>
+                  <th>Tax Field</th>
+                  <th width="90%">Value</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>County Use Type One</td>
+                  <td>{{getProperty('tax').area?.countyUse1}}</td>
+                </tr>
+                <tr>
+                  <td>County Use Type Two</td>
+                  <td>{{getProperty('tax').area?.countyUse2 == null ? 'Single Use' : getProperty('tax').area?.countyUse2}}</td>
+                </tr>
+                <tr>
+                  <td>Lot Description</td>
+                  <td>{{getProperty('tax').lot?.lotType}}</td>
+                </tr>
+                <tr>
+                  <td>Lot Size (acres)</td>
+                  <td>{{getProperty('tax').lot?.lotSizeInAcres}}</td>
+                </tr>
+                <tr>
+                  <td>Lot Size (sqft)</td>
+                  <td>{{getProperty('tax').lot?.lotSizeInSQFT}}</td>
+                </tr>
+                <tr>
+                  <td>Lot Frontage</td>
+                  <td>{{getProperty('tax').lot?.frontage}}</td>
+                </tr>
+                <tr>
+                  <td>Lot Depth</td>
+                  <td>{{getProperty('tax').lot?.depth}}</td>
+                </tr>
+                <tr>
+                  <td>Land Use</td>
+                  <td>{{getProperty('tax').summary?.propLandUse}}</td>
+                </tr>
+                <tr>
+                  <td>Property Classification</td>
+                  <td>{{getProperty('tax').summary?.propClass}}</td>
+                </tr>
+                <tr>
+                  <td>Survey Range</td>
+                  <td>Not Available in Texas</td>
+                </tr>
+                <tr>
+                  <td>Survey Section</td>
+                  <td>Not Available in Texas</td>
+                </tr>
+                <tr>
+                  <td>Survey Township</td>
+                  <td>Not Available in Texas</td>
+                </tr>
+                <tr>
+                  <td>Tax Code Area</td>
+                  <td>{{getProperty('tax').area?.taxCodeArea}}</td>
+                </tr>
+                <tr>
+                  <td>Appraised Land Value</td>
+                  <td>{{getProperty('tax').assessment?.appraised?.apprLandValue | currency:'USD':true:'1.0-0'}}</td>
+                </tr>
+                <tr>
+                  <td>Market Land Value</td>
+                  <td>{{getProperty('tax').assessment?.market?.mktLandValue | currency:'USD':true:'1.0-0'}}</td>
+                </tr>
+                <tr>
+                  <td>Assessed Land Value</td>
+                  <td>{{getProperty('tax').assessment?.assessed?.assdLandValue | currency:'USD':true:'1.0-0'}}</td>
+                </tr>
+                <tr>
+                  <td>Assessed Land Value / sqft</td>
+                  <td>{{getProperty('tax').assessment?.assessed?.assdLandPerSizeUnit | currency:'USD':true:'1.0-0'}}</td>
+                </tr>
+                <tr>
+                  <td>Calculated Land Value</td>
+                  <td>{{getProperty('tax').assessment?.calculations?.calcLandValue | currency:'USD':true:'1.0-0'}}</td>
+                </tr>
+                <tr>
+                  <td>Calculated Land Value Indicator</td>
+                  <td>{{getProperty('tax').assessment?.calculations?.calcLandInd}}</td>
+                </tr>
+                <tr>
+                  <td>Calculated Land Value / sqft</td>
+                  <td>{{getProperty('tax').assessment?.calculations?.calcLandPerSizeUnit | currency:'USD':true:'1.0-0'}}</td>
+                </tr>
+                <tr>
+                  <td>Assessed Improvement Value</td>
+                  <td>{{getProperty('tax').assessment?.appraised?.apprImprValue | currency:'USD':true:'1.0-0'}}</td>
+                </tr>
+                <tr>
+                  <td>Mobile Home Indicator</td>
+                  <td>{{getProperty('tax').building?.summary?.mobileHomeInd == null ? 'No' : getProperty('tax').building?.summary?.mobileHomeInd}}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="pane">
+        <div class="inner_pane">
+          <div class="widget table striped narrow full-width">
+            <table>
+              <thead>
+                <tr>
+                  <th>Tax Field</th>
+                  <th width="90%">Value</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Improvement Type</td>
+                  <td>{{getProperty('tax').building?.summary?.imprType}}</td>
+                </tr>
+                <tr>
+                  <td>Building Type</td>
+                  <td>{{getProperty('tax').building?.summary?.bldgType}}</td>
+                </tr>
+                <tr>
+                  <td>Building Name</td>
+                  <td>Not named</td>
+                </tr>
+                <tr>
+                  <td>Building Size, Number</td>
+                  <td>{{getProperty('tax').building?.size?.bldgSize}}, {{getProperty('tax').building?.summary?.bldgsNum}}</td>
+                </tr>
+                <tr>
+                  <td>Size Indicator</td>
+                  <td>{{getProperty('tax').building?.size?.sizeInd}}</td>
+                </tr>
+                <tr>
+                  <td>Gross Size</td>
+                  <td>{{getProperty('tax').building?.size?.grossSize}}</td>
+                </tr>
+                <tr>
+                  <td>Gross Size Adjusted</td>
+                  <td>{{getProperty('tax').building?.size?.grossSizeAdjusted}}</td>
+                </tr>
+                <tr>
+                  <td>Ground Floor Size</td>
+                  <td>{{getProperty('tax').building?.size?.groundFloorSize}}</td>
+                </tr>
+                <tr>
+                  <td>Basement Size</td>
+                  <td>{{getProperty('tax').building?.interior?.bsmtSize}}</td>
+                </tr>
+                <tr>
+                  <td>Living Size</td>
+                  <td>{{getProperty('tax').building?.size?.livingSize}}</td>
+                </tr>
+                <tr>
+                  <td>Parking Type, Size</td>
+                  <td>{{getProperty('tax').building?.parking?.prkgType}}, {{getProperty('tax').building?.parking?.prkgSize}}</td>
+                </tr>
+                <tr>
+                  <td>Universal Size</td>
+                  <td>{{getProperty('tax').building?.size?.universalSize}}</td>
+                </tr>
+                <tr>
+                  <td>Units Count</td>
+                  <td>{{getProperty('tax').building?.summary?.unitsCount}}</td>
+                </tr>
+                  <!--
+                    Total Rooms = beds + 1 Kithcen Area + 1 Living Area + 1 Dining Area + Any Other Extra rooms
+                  -->
+                <tr>
+                  <td>Total Rooms</td>
+                  <td>{{getProperty('tax').building?.rooms?.roomsTotal != 0 ? getProperty('tax').building?.rooms?.roomsTotal : getProperty('tax').building?.rooms?.beds + 3}}</td>
+                </tr>
+                <tr>
+                  <td>Stories Description</td>
+                  <td>{{getProperty('tax').building?.summary?.storyDesc}}</td>
+                </tr>
+                <tr>
+                  <td>Number of Stories</td>
+                  <td>{{getProperty('tax').building?.summary?.levels}}</td>
+                </tr>
+                <tr>
+                  <td>Total Baths</td>
+                  <td>{{getProperty('tax').building?.rooms?.bathsTotal}}</td>
+                </tr>
+                <tr>
+                  <td>Full Baths</td>
+                  <td>{{getProperty('tax').building?.rooms?.bathsFull}}</td>
+                </tr>
+                <tr>
+                  <td>Half Baths</td>
+                  <td>{{getProperty('tax').building?.rooms?.bathsHalf}}</td>
+                </tr>
+                <tr>
+                  <td>Bath Fixtures, Calculated</td>
+                  <td>{{getProperty('tax').building?.rooms?.bathFixtures}}, {{getProperty('tax').building?.rooms?.bathsCalc}}</td>
+                </tr>
+                <tr>
+                  <td>Total Bedrooms</td>
+                  <td>{{getProperty('tax').building?.rooms?.beds}}</td>
+                </tr>
+                <tr>
+                  <td>Garage Type</td>
+                  <td>{{getProperty('tax').building?.parking?.garageType}}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="pane">
+        <div class="inner_pane">
+          <div class="widget table striped narrow full-width">
+            <table>
+              <thead>
+                <tr>
+                  <th>Tax Field</th>
+                  <th width="90%">Value</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Construction Type</td>
+                  <td>{{getProperty('tax').building?.construction?.constructionType}}</td>
+                </tr>
+                <tr>
+                  <td>Building Condition</td>
+                  <td>{{getProperty('tax').building?.construction?.condition}}</td>
+                </tr>
+                <tr>
+                  <td>Foundation Type</td>
+                  <td>{{getProperty('tax').building?.construction?.foundationType}}</td>
+                </tr>
+                <tr>
+                  <td>Basement Type</td>
+                  <td>Not described in {{getProperty('tax').area?.countrysecsubd}}</td>
+                </tr>
+                <tr>
+                  <td>Frame Type</td>
+                  <td>Not described in {{getProperty('tax').area?.countrysecsubd}}</td>
+                </tr>
+                <tr>
+                  <td>Wall Type</td>
+                  <td>{{getProperty('tax').building?.construction?.wallType}}</td>
+                </tr>
+                <tr>
+                  <td>Energy Type</td>
+                  <td>{{getProperty('tax').utilities?.energyType}}</td>
+                </tr>
+                <tr>
+                  <td>Heating Type, Fuel</td>
+                  <td>{{getProperty('tax').utilities?.heatingType}}, {{getProperty('tax').utilities?.heatingFuel}}</td>
+                </tr>
+                <tr>
+                  <td>Cooling Type</td>
+                  <td>{{getProperty('tax').utilities?.coolingType}}</td>
+                </tr>
+                <tr>
+                  <td>Fireplace Type, Count</td>
+                  <td>{{getProperty('tax').building?.interior?.fplcType}}, {{getProperty('tax').building?.interior?.fplcCount}}</td>
+                </tr>
+                <tr>
+                  <td>Water Type</td>
+                  <td>PUBLIC</td>
+                </tr>
+                <tr>
+                  <td>Property Type</td>
+                  <td>{{getProperty('tax').summary?.propType}}</td>
+                </tr>
+                <tr>
+                  <td>Property Sub Type</td>
+                  <td>{{getProperty('tax').summary?.propSubType}}</td>
+                </tr>
+                <tr>
+                  <td>Property Classification</td>
+                  <td>{{getProperty('tax').summary?.propClass}}</td>
+                </tr>
+                <tr>
+                  <td>Construction Quality</td>
+                  <td>{{getProperty('tax').building?.construction?.condition}}</td>
+                </tr>
+                <tr>
+                  <td>Elevation</td>
+                  <td>Not described in {{getProperty('tax').area?.countrysecsubd}}</td>
+                </tr>
+                <tr>
+                  <td>Roof Cover</td>
+                  <td>{{getProperty('tax').building?.construction?.roofCover}}</td>
+                </tr>
+                <tr>
+                  <td>Roof Shape</td>
+                  <td>{{getProperty('tax').building?.construction?.roofShape}}</td>
+                </tr>
+                <tr>
+                  <td>Pool Indicator, Type</td>
+                  <td *ngIf="getProperty('tax').lot?.poolInd">{{getProperty('tax').lot?.poolInd}}, {{getProperty('tax').lot?.poolType}}</td>
+                  <td *ngIf="!getProperty('tax').lot?.poolInd">None</td>
+                </tr>
+                <tr>
+                  <td>Property View</td>
+                  <td *ngIf="getProperty().address?.zipType != 'Rural'">PUBLIC</td>
+                  <td *ngIf="getProperty().address?.zipType == 'Rural'">PRIVATE</td>
+                </tr>
+                <tr>
+                  <td>Architectural Style</td>
+                  <td>Not described in {{getProperty('tax').area?.countrysecsubd}}</td>
+                </tr>
+                <tr>
+                  <td>Sewer Type</td>
+                  <td>Not described in {{getProperty('tax').area?.countrysecsubd}}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="pane">
+        <div class="inner_pane">
+          <div class="widget table striped narrow full-width">
+            <table>
+              <thead>
+                <tr>
+                  <th>Tax Field</th>
+                  <th width="90%">Value</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Assessor Parcel Number</td>
+                  <td>{{getProperty('tax').identifier?.apn}}</td>
+                </tr>
+                <tr>
+                  <td>Original Assessor Parcel Number</td>
+                  <td>{{getProperty('tax').identifier?.apnOrig}}</td>
+                </tr>
+                <tr>
+                  <td>FIPS Code</td>
+                  <td>{{getProperty('tax').identifier?.fips}}</td>
+                </tr>
+                <tr>
+                  <td>Tax Code Area</td>
+                  <td>{{getProperty('tax').area?.taxCodeArea}}</td>
+                </tr>
+                <tr>
+                  <td>Tax / sqft</td>
+                  <td>{{getProperty('tax').assessment?.tax?.taxPerSizeUnit | currency:'USD':true:'1.0-0'}}</td>
+                </tr>
+                <tr>
+                  <td>Taxes to AVM</td>
+                  <td>{{getProperty('tax').avm?.calculations?.ratioTaxAmt}}</td>
+                </tr>
+                <tr>
+                  <td>Taxes to Market Value</td>
+                  <td>{{getProperty('tax').avm?.calculations?.ratioTaxValue}}</td>
+                </tr>
+                <tr>
+                  <td>Tax Year</td>
+                  <td>{{getProperty('tax').assessment?.tax?.taxYear}}</td>
+                </tr>
+                <tr>
+                  <td>Total Tax Amount</td>
+                  <td>{{getProperty('tax').assessment?.tax?.taxAmt | currency:'USD':true:'1.0-0'}}</td>
+                </tr>
+                <tr>
+                  <td>Assessed Total Value</td>
+                  <td>{{getProperty('tax').assessment?.assessed?.assdTtlValue | currency:'USD':true:'1.0-0'}}</td>
+                </tr>
+                <tr>
+                  <td>Appraised Land Value</td>
+                  <td>{{getProperty('tax').assessment?.appraised?.apprLandValue | currency:'USD':true:'1.0-0'}}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="pane">
+        <div class="inner_pane">
+          <div class="widget table striped narrow full-width">
+            <table>
+              <thead>
+                <tr>
+                  <th>Tax Field</th>
+                  <th width="90%">Value</th>
+                </tr>
+              </thead>
+              <tbody>
+              <tr>
+                <td>Market Improved Value</td>
+                <td>{{getProperty('tax').assessment?.market?.mktImprValue | currency:'USD':true:'1.0-0'}}</td>
+              </tr>
+              <tr>
+                <td>Market Land Value</td>
+                <td>{{getProperty('tax').assessment?.market?.mktLandValue | currency:'USD':true:'1.0-0'}}</td>
+              </tr>
+              <tr>
+                <td>Market Total Value</td>
+                <td>{{getProperty('tax').assessment?.market?.mktTtlValue | currency:'USD':true:'1.0-0'}}</td>
+              </tr>
+              <tr>
+                <td>Value Range</td>
+                <td>{{getProperty('tax').avm?.calculations?.rangePctOfValue}} %</td>
+              </tr>
+              <tr>
+                <td>High Value, Low Value</td>
+                <td>{{getProperty('tax').avm?.amount?.high | currency:'USD':true:'1.0-0'}}, {{getProperty('tax').avm?.amount?.low | currency:'USD':true:'1.0-0'}}</td>
+              </tr>
+              <tr>
+                <td>Assessed Improved Value / sqft</td>
+                <td>{{getProperty('tax').assessment?.assessed?.assdImprPerSizeUnit | currency:'USD':true:'1.0-0'}}</td>
+              </tr>
+              <tr>
+                <td>Assessed Improved Value</td>
+                <td>{{getProperty('tax').assessment?.assessed?.assdImprValue | currency:'USD':true:'1.0-0'}}</td>
+              </tr>
+              <tr>
+                <td>Assessed Land Value / sqft</td>
+                <td>{{getProperty('tax').assessment?.assessed?.assdLandPerSizeUnit | currency:'USD':true:'1.0-0'}}</td>
+              </tr>
+              <tr>
+                <td>Assessed Land Value</td>
+                <td>{{getProperty('tax').assessment?.assessed?.assdLandValue | currency:'USD':true:'1.0-0'}}</td>
+              </tr>
+              <tr>
+                <td>Appriased Improvement</td>
+                <td>{{getProperty('tax').assessment?.appraised?.apprImprValue | currency:'USD':true:'1.0-0'}}</td>
+              </tr>
+              <tr>
+                <td>Assessed Total Value</td>
+                <td>{{getProperty('tax').assessment?.assessed?.assdTtlValue | currency:'USD':true:'1.0-0'}}</td>
+              </tr>
+              <tr>
+                <td>Assessed Total Value / sqft</td>
+                <td>{{getProperty('tax').assessment?.assessed?.assdTtlPerSizeUnit | currency:'USD':true:'1.0-0'}}</td>
+              </tr>
+              <tr>
+                <td>Calculated Improved Value</td>
+                <td>{{getProperty('tax').assessment?.calculations?.calcImprValue | currency:'USD':true:'1.0-0'}}</td>
+              </tr>
+              <tr>
+                <td>Calculated Improved Value / sqft</td>
+                <td>{{getProperty('tax').assessment?.calculations?.calcImprPerSizeUnit | currency:'USD':true:'1.0-0'}}</td>
+              </tr>
+              <tr>
+                <td>Calculated Land Value</td>
+                <td>{{getProperty('tax').assessment?.calculations?.calcLandValue | currency:'USD':true:'1.0-0'}}</td>
+              </tr>
+              <tr>
+                <td>Calculated Land Value / sqft</td>
+                <td>{{getProperty('tax').assessment?.calculations?.calcLandPerSizeUnit | currency:'USD':true:'1.0-0'}}</td>
+              </tr>
+              <tr>
+                <td>Calculated Total Value</td>
+                <td>{{getProperty('tax').assessment?.calculations?.calcTtlValue | currency:'USD':true:'1.0-0'}}</td>
+              </tr>
+              <tr>
+                <td>Calculated Total Value / sqft</td>
+                <td>{{getProperty('tax').assessment?.calculations?.calcValuePerSizeUnit | currency:'USD':true:'1.0-0'}}</td>
+              </tr>
+              <tr>
+                <td>Monthly Change Value</td>
+                <td>{{getProperty('tax').avm?.calculations?.monthlyChgValue | currency:'USD':true:'1.0-0'}}</td>
+              </tr>
+              <tr>
+                <td>Monthly Change Percent</td>
+                <td>{{getProperty('tax').avm?.calculations?.monthlyChgPct}}</td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="pane">
+        <div class="inner_pane">
+          <div class="widget table striped narrow full-width">
+            <table>
+              <thead>
+                <tr>
+                  <th>Tax Field</th>
+                  <th width="90%">Value</th>
+                </tr>
+              </thead>
+              <tbody>
+              <tr>
+                <td>Disclosure Type</td>
+                <td>{{getProperty('tax').sale?.amount?.saleDisclosureType}}</td>
+              </tr>
+              <tr>
+                <td>Last Modified</td>
+                <td>{{getProperty('tax').vintage?.lastModified}}</td>
+              </tr>
+              <tr>
+                <td>Publish Date</td>
+                <td>{{getProperty('tax').vintage?.pubDate}}</td>
+              </tr>
+              <tr>
+                <td>Transaction Type</td>
+                <td>{{getProperty('tax').sale?.amount?.saleTransType}}</td>
+              </tr>
+              <tr>
+                <td>Sale Contract Date</td>
+                <td>{{getProperty('tax').sale?.saleTransDate}}</td>
+              </tr>
+              <tr>
+                <td>Sale Amount</td>
+                <td>{{getProperty('tax').sale?.amount?.saleAmt | currency:'USD':true:'1.0-0'}}</td>
+              </tr>
+              <tr>
+                <td>Price / sqft</td>
+                <td>{{getProperty('tax').sale?.calculation?.pricePerSizeUnit | currency:'USD':true:'1.0-0'}}</td>
+              </tr>
+              <tr>
+                <td>Deed Recording Date</td>
+                <td>{{getProperty('tax').sale?.amount?.saleRecDate}}</td>
+              </tr>
+              <tr>
+                <td>Searchable Date</td>
+                <td>{{getProperty('tax').sale?.saleSearchDate}}</td>
+              </tr>
+              <tr>
+                <td>Document Number</td>
+                <td>{{getProperty('tax').sale?.amount?.saleDocNum}}</td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- end inner_panes -->
+  </div>
+  <!-- end panes -->
+</div>
+<!-- end tabswrapper -->

@@ -1,0 +1,270 @@
+<div class="content" [ngClass]="{'collapsed-accordions': !viewedAccordions, 'expanded-accordions': viewedAccordions}">
+  <ngb-accordion class="accordion-styled" [closeOthers]="true">
+    <article class="accordion is-open" ngbPanel *ngIf="propertyService.property?.hitMergedResponse?.auction?.auctionDate">
+      <template ngbPanelTitle>
+        <header class="pulldown-tooltip">
+          <h2>Auction Properties</h2>
+          <h6>Information about an upcoming auction for this property.</h6>
+          <a class="action-button" href=""></a>
+        </header>
+      </template>
+      <template ngbPanelContent>
+        <app-property-auctions [property]="propertyService.property">
+        </app-property-auctions>
+      </template>
+    </article>
+    <article class="accordion is-open" ngbPanel *ngIf="propertyService.property?.mls">
+      <template ngbPanelTitle>
+        <header class="pulldown-tooltip" [ngClass]="{'dimmed': oldMls}">
+          <h2>MLS Public Remarks</h2>
+          <h6>Information from MLS listings of this property, current and past.</h6>
+          <a class="action-button" href=""></a>
+        </header>
+      </template>
+      <template ngbPanelContent>
+        <app-property-info [property]="propertyService.property" [floatOption]="unset" mode="summary"></app-property-info>
+      </template>
+    </article>
+    <article class="accordion is-open" ngbPanel forceRendered="true">
+      <template ngbPanelTitle>
+        <header class="pulldown-tooltip">
+          <h2>Tax and Property Information</h2>
+          <h6>General information including deed and sales history.</h6>
+          <a class="action-button" href=""></a>
+        </header>
+      </template>
+      <template ngbPanelContent>
+        <app-property-tax [property]="propertyService.property"></app-property-tax>
+      </template>
+    </article>
+    <article class="accordion is-open" ngbPanel *ngIf="propertyService.property?.hitMergedResponse?.reconciledRemarks && propertyService.property?.hitMergedResponse?.reconciledRemarks.length > 0">
+      <template ngbPanelTitle>
+        <header class="pulldown-tooltip">
+          <h2>Reconciled Remarks</h2>
+          <h6>Compare and contrast for discrepancies between MLS and Tax data.</h6>
+          <a class="action-button" href=""></a>
+        </header>
+      </template>
+      <template ngbPanelContent>
+        <div class="widget table narrow full-width">
+          <table class="reconciled-remarks">
+            <thead>
+              <tr>
+                <th>Data Key</th>
+                <th>MLS Defines</th>
+                <th>Tax Defines</th>
+              </tr>
+            </thead>
+            <tbody>
+              <template ngFor let-remark [ngForOf]="propertyService.property.hitMergedResponse.reconciledRemarks">
+                <tr>
+                  <td>{{remark.dataProperty}}</td>
+                  <td>{{remark.mlsDefined}}</td>
+                  <td>{{remark.taxDefined}}</td>
+                <tr>
+              </template>
+            </tbody>
+          </table>
+        </div>
+      </template>
+    </article>
+    <article class="accordion is-open" ngbPanel>
+      <template ngbPanelTitle>
+        <header class="pulldown-tooltip">
+          <h2>Photos</h2>
+          <h6>Load your own photos to use with this property.</h6>
+          <a class="action-button" href=""></a>
+        </header>
+      </template>
+      <template ngbPanelContent>
+        <div class="tabswrapper">
+          <ul class="infotabs general">
+            <li class="tab" data-pane-id="pane1">Upload</li>
+          </ul>
+          <div class="panes accordion" style="border: none">
+            <div class="inner_panes">
+              <div class="pane">
+                <div class="inner_pane">
+                  <div class="tabcontent">
+                    <div class="form">
+                      <form #photoUpload="ngForm" (ngSubmit)="onPhotoUpload(pendingPhotoUpload)">
+                        <fieldset>
+                          <div class="group">
+                            <label for="photo">Photos to Upload</label>
+                            <input #pendingPhotoUpload type="file" name="photo" placeholder="Photo" multiple required (change)="handlePhotoInput($event.target.files)" />
+                            <p class="description">
+                              If you have images of this property that you would like to include in your personal gallery, you may upload them here.
+                            </p>
+                          </div>
+                          <div class="group button-group">
+                            <input type="submit" class="button large" value="Upload to private gallery" [disabled]="photosUpload == null">
+                          </div>
+                        </fieldset>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </template>
+    </article>
+    <article class="accordion is-open" ngbPanel>
+      <template ngbPanelTitle>
+        <header class="pulldown-tooltip">
+          <h2>Notes</h2>
+          <h6>View your saved history and your manual notes for this property.</h6>
+          <a class="action-button" href=""></a>
+        </header>
+      </template>
+      <template ngbPanelContent>
+        <div class="padding paper">
+          <div class="paper-head"></div>
+          <template ngFor let-currentNote [ngForOf]="notesService.notes">
+            <div>
+              <p [innerHTML]="currentNote.content"></p>
+              <p><a href="javascript:void(0)" *ngIf="currentNote.download" (click)="downloadNote(currentNote)">Download {{currentNote.downloadName}}</a></p>
+              <small style="position: relative; top: -20px">{{notesService.formatNoteTimestamp(currentNote.created)}}</small>
+            </div>
+          </template>
+        </div>
+      </template>
+    </article>
+    <article class="accordion is-open" ngbPanel>
+      <template ngbPanelTitle>
+        <header class="pulldown-tooltip">
+          <h2>Census</h2>
+          <h6>Basic demographics in the area.</h6>
+          <a class="action-button" href=""></a>
+        </header>
+      </template>
+      <template ngbPanelContent>
+        <app-property-census [property]="propertyService.property"></app-property-census>
+      </template>
+    </article>
+    <article class="accordion is-open" ngbPanel>
+      <template ngbPanelTitle>
+        <header class="pulldown-tooltip">
+          <h2>Nearby Schools</h2>
+          <h6>Schools in the area that serve this property.</h6>
+          <a class="action-button" href=""></a>
+        </header>
+      </template>
+      <template ngbPanelContent>
+        <div class="padding">
+          <div class="form-layout">
+            <section class="sec-block schools-section" *ngIf="useAttomSchools() && propertyService.schoolsData">
+              <div class="line-block">
+                <div class="title-text">Based on schools closest to the property</div>
+                <div class="text-box">Buyer to verify</div>
+              </div>
+              <template ngFor let-sch [ngForOf]="propertyService.schoolsData.school">
+                <div class="line-block">
+                  <div class="title-text">{{sch.institutionName}} ({{sch.filetypetext}})</div>
+                  <!--div class="text-box">{{sch.gradelevel1lotext}} - {{sch.gradelevel1hitext}}</div-->
+                  <div class="text-box">{{sch.distance}} miles from subject property</div>
+                </div>
+              </template>
+              <div class="line-block">
+                <div class="title-text">School District</div>
+                <div class="text-box">{{propertyService.schoolsData?.schoolDistrict?.districtName}}</div>
+              </div>
+            </section>
+            <section class="sec-block schools-section" *ngIf="!useAttomSchools()">
+              <div class="line-block">
+                <div class="title-text">Schools as reported by MLS</div>
+                <div class="text-box">Buyer to verify</div>
+              </div>
+              <div class="line-block" *ngIf="propertyService.getCurrentProperty('mls').mls?.school?.elementarySchoolName">
+                <div class="title-text">Elementary School</div>
+                <div class="text-box">{{propertyService.getCurrentProperty('mls').mls?.school?.elementarySchoolName}}</div>
+              </div>
+              <div class="line-block" *ngIf="propertyService.getCurrentProperty('mls').mls?.school?.primarySchoolName">
+                <div class="title-text">Primary School</div>
+                <div class="text-box">{{propertyService.getCurrentProperty('mls').mls?.school?.primarySchoolName}}</div>
+              </div>
+              <div class="line-block" *ngIf="propertyService.getCurrentProperty('mls').mls?.school?.middleSchoolName">
+                <div class="title-text">Middle School</div>
+                <div class="text-box">{{propertyService.getCurrentProperty('mls').mls?.school?.middleSchoolName}}</div>
+              </div>
+              <div class="line-block" *ngIf="propertyService.getCurrentProperty('mls').mls?.school?.intermediateSchoolName">
+                <div class="title-text">Intermediate School</div>
+                <div class="text-box">{{propertyService.getCurrentProperty('mls').mls?.school?.intermediateSchoolName}}</div>
+              </div>
+              <div class="line-block" *ngIf="propertyService.getCurrentProperty('mls').mls?.school?.juniorHighSchoolName">
+                <div class="title-text">Junior High School</div>
+                <div class="text-box">{{propertyService.getCurrentProperty('mls').mls?.school?.juniorHighSchoolName}}</div>
+              </div>
+              <div class="line-block" *ngIf="propertyService.getCurrentProperty('mls').mls?.school?.highSchoolName">
+                <div class="title-text">High School</div>
+                <div class="text-box">{{propertyService.getCurrentProperty('mls').mls?.school?.highSchoolName}}</div>
+              </div>
+              <div class="line-block" *ngIf="propertyService.getCurrentProperty('mls').mls?.school?.schoolDistrict">
+                <div class="title-text">School Dist</div>
+                <div class="text-box">{{propertyService.getCurrentProperty('mls').mls?.school?.schoolDistrict}}</div>
+              </div>
+            </section>
+          </div>
+        </div>
+      </template>
+    </article>
+    <!--article class="accordion is-open" ngbPanel>
+      <template ngbPanelTitle>
+        <header class="pulldown-tooltip">
+          <h2>Trends and CMAs</h2>
+          <a class="action-button" href=""></a>
+        </header>
+      </template>
+      <template ngbPanelContent>
+        <app-property-trends [property]="propertyService.property"></app-property-trends>
+      </template>
+    </article-->
+    <article class="accordion is-open" ngbPanel>
+      <template ngbPanelTitle>
+        <header class="pulldown-tooltip">
+          <h2>Analytics</h2>
+          <h6>Median sales price and volume in the area.</h6>
+          <a class="action-button" href=""></a>
+        </header>
+      </template>
+      <template ngbPanelContent>
+        <app-property-analytics [property]="propertyService.property"></app-property-analytics>
+      </template>
+    </article>
+    <article class="accordion is-open" ngbPanel>
+      <template ngbPanelTitle>
+        <header class="pulldown-tooltip">
+          <h2>Area Points of Interest</h2>
+          <h6>Infrastructure in the area.</h6>
+          <a class="action-button" href=""></a>
+        </header>
+      </template>
+      <template ngbPanelContent>
+        <app-property-poi [property]="propertyService.property"></app-property-poi>
+      </template>
+    </article>
+  </ngb-accordion>
+</div>
+<div class="secondary-content">
+  <div class="widget map small">
+    <header>
+      <h2>Map</h2>
+    </header>
+    <div class="content">
+      <app-google-map [fitBounds]="true" [active]="propertyService.getCurrentProperty().location?.latitude && propertyService.getCurrentProperty().location?.longitude" [property]="propertyService.property">
+      </app-google-map>
+    </div>
+  </div>
+</div>
+<div class="secondary-content">
+  <div class="widget map small">
+    <header>
+      <h2>Street View</h2>
+    </header>
+    <div class="content">
+      <app-google-streetview [active]="isMapActive()" [property]="{latitude: propertyService.getCurrentProperty().location?.latitude, longitude: propertyService.getCurrentProperty().location?.longitude}">
+      </app-google-streetview>
+    </div>
+  </div>
+</div>

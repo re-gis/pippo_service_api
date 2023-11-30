@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: hit-web
+  name: hit-web
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hit-web
+  template:
+    metadata:
+      labels:
+        app: hit-web
+    spec:
+      containers:
+      - name: hit-web
+        image: image:tag
+        env:
+        - name: API_ENDPOINT
+          value: https://api.hit.homeinvestortool.com/
+        - name: AUTH_ENDPOINT
+          value: https://auth.homeinvestortool.com/
+        ports:
+        - containerPort: 80
+          protocol: TCP

@@ -1,0 +1,225 @@
+<div class="content full-width">
+    <div class="widget calculator">
+        <article>
+            <div class="group">
+                <div class="subsection-wrap">
+                    <div class="subsection-content subsection-a">
+                        <div class="group values-two-column">
+                            <accordion>
+                                <accordion-group class="accordion">
+                                    <accordion-heading class="accordion-header">
+                                        <div class="label select-value-small">
+                                            <h3>Class</h3>
+                                        </div>
+                                        <div class="values">
+                                            <div class="value value-wrap">
+                                                <span class="value" *ngIf="!propertyService.simpleQuality">{{'Q' + (propertyService.getFlipSelectedQuality() + 1)}}</span>
+                                                <span class="value" *ngIf="propertyService.simpleQuality">{{propertyService.getQualityName(propertyService.getFlipSelectedQuality())}}</span>
+                                            </div>
+                                        </div>
+                                    </accordion-heading>
+                                    <div class="subsection-wrap">
+                                        <div class="subsection-content subsection-a">
+                                            <div class="group"
+                                                [ngClass]="{'s1-example': propertyService.getCurrentProperty().building?.summary?.levels == 1, 's2-example': propertyService.getCurrentProperty().building?.summary?.levels != 1}">
+                                                <header [ngSwitch]="propertyService.getFlipSelectedQuality()">
+                                                    <div class="container" style="margin: 0; padding: 0 0 0 44px">
+                                                      <div class="repair-q-image q6-example" (click)="selectQuality(5)"
+                                                          [ngClass]="{'repair-q-hidden': propertyService.getFlipSelectedQuality() == 5 || propertyService.simpleQuality}"></div>
+                                                      <div class="repair-q-image q5-example" (click)="selectQuality(4)"
+                                                          [ngClass]="{'repair-q-hidden': propertyService.getFlipSelectedQuality() == 4 || propertyService.simpleQuality}"></div>
+                                                      <div class="repair-q-image q4-example" (click)="selectQuality(3, 'Volume')"
+                                                          [ngClass]="{'repair-q-hidden': propertyService.getFlipSelectedQuality() == 3 && !propertyService.simpleQuality}"><div>Volume</div></div>
+                                                      <div class="repair-q-image q3-example" (click)="selectQuality(2, 'Semi-Custom')"
+                                                          [ngClass]="{'repair-q-hidden': propertyService.getFlipSelectedQuality() == 2 && !propertyService.simpleQuality}"><div>Semi-Custom</div></div>
+                                                      <div class="repair-q-image q2-example" (click)="selectQuality(1, 'Custom')"
+                                                          [ngClass]="{'repair-q-hidden': propertyService.getFlipSelectedQuality() == 1 && !propertyService.simpleQuality}"><div>Custom</div></div>
+                                                      <div class="repair-q-image q1-example" (click)="selectQuality(0)"
+                                                          [ngClass]="{'repair-q-hidden': propertyService.getFlipSelectedQuality() == 0 || propertyService.simpleQuality}"></div>
+                                                    </div>
+                                                    <div *ngIf="showQualityDetails">
+                                                      <div class="repair-q-image q1-example repair-q-selected" *ngSwitchCase="0"></div>
+                                                      <div class="repair-q-image q2-example repair-q-selected" *ngSwitchCase="1"><div>Custom</div></div>
+                                                      <div class="repair-q-image q3-example repair-q-selected" *ngSwitchCase="2"><div>Semi-Custom</div></div>
+                                                      <div class="repair-q-image q4-example repair-q-selected" *ngSwitchCase="3"><div>Volume</div></div>
+                                                      <div class="repair-q-image q5-example repair-q-selected" *ngSwitchCase="4"></div>
+                                                      <div class="repair-q-image q6-example repair-q-selected" *ngSwitchCase="5"></div>
+                                                    </div>
+                                                    <div class="label" *ngIf="showQualityDetails"
+                                                            [innerHTML]="propertyService.getQualityDescription(propertyService.getFlipSelectedQuality(), propertyService.getCurrentProperty().building?.summary?.levels)"></div>
+                                                </header>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </accordion-group>
+                            </accordion>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </article>
+    </div>
+</div>
+<div class="content full-width">
+    <div class="widget calculator">
+        <article>
+            <div class="group">
+                <div class="subsection-wrap">
+                    <div class="subsection-content subsection-a" *ngIf="propertyService.getCurrentPhotos().length > 0">
+                        <div class="group values-two-column">
+                            <accordion>
+                                <accordion-group class="accordion no-caret">
+                                    <accordion-heading class="accordion-header" (click)="togglePhotoEditing()">
+                                        <div class="label select-value-small">
+                                            <h3>Photos</h3>
+                                        </div>
+                                        <div class="values">
+                                            <div class="value value-wrap">
+                                                <span class="value">{{editPhotos ? 'Editor' : ''}}</span>
+                                            </div>
+                                        </div>
+                                    </accordion-heading>
+                                    <div class="subsection-wrap">
+                                        <div class="subsection-content subsection-a">
+                                        </div>
+                                    </div>
+                                </accordion-group>
+                            </accordion>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </article>
+    </div>
+</div>
+<div style="background: #ffffd1; border-left: 5px solid #abab8d; padding-top: 16px" *ngIf="false && !editPhotos">
+    <!--app-addendum-gallery></app-addendum-gallery-->
+</div>
+<div style="background: #ffffd1; border-left: 5px solid #abab8d; padding-top: 16px" *ngIf="editPhotos">
+    <app-photo-addendum></app-photo-addendum>
+</div>
+<div class="content full-width" style="height: 70px" (click)="toggleRepairRemodelWindow()" *ngIf="false">
+    <div class="widget calculator">
+        <article>
+            <div class="group">
+                <div class="subsection-wrap">
+                    <div class="subsection-content subsection-a">
+                        <div class="group values-two-column">
+                            <accordion>
+                                <accordion-group class="accordion">
+                                    <accordion-heading class="accordion-header nocontent">
+                                        <div class="label select-value-small">
+                                            <h3 style="float: left">Repair</h3>
+                                            <div class="tab-selector-inline cftoggle-position calc" style="margin-top: 1.25rem">
+                                                <ul>
+                                                    <li class="active" (click)="switchRepairRemodel()">Remodel</li>
+                                                </ul>
+                                            </div>
+                                            <span style="font-weight: 300; margin-left: 1em; margin-right: 1em; top: 1.25rem; position: relative" *ngIf="propertyService.getFlipRepairsCondition() >= 0">
+                                                ${{propertyService.propertyFlipData.repairRemodelTotal | number:'1.0-0'}}
+                                            </span>
+                                            <span style="font-weight: 300; top: 1.25rem; position: relative" *ngIf="propertyService.getFlipRepairsCondition() >= 0">
+                                                ${{(propertyService.propertyFlipData.repairRemodelTotal / propertyService.getCurrentProperty().building?.size?.bldgSize) | number:'1.0-2'}} / sqft
+                                            </span>
+                                        </div>
+                                        <div class="values">
+                                            <div class="value value-wrap">
+                                                <span class="value" *ngIf="propertyService.getFlipRepairsCondition() >= 0">C{{propertyService.getFlipRepairsCondition() + 1}}: {{propertyService.getRepairConditionName(propertyService.getFlipRepairsCondition())}}</span>
+                                                <span class="value" *ngIf="propertyService.getFlipRepairsCondition() < 0">{{propertyService.getRepairConditionName(propertyService.getFlipRepairsCondition())}}</span>
+                                            </div>
+                                        </div>
+                                    </accordion-heading>
+                                </accordion-group>
+                            </accordion>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </article>
+    </div>
+</div>
+<div class="content full-width" *ngIf="false && rrVisible">
+    <div class="widget calculator accordion">
+      <div class="widget table nohighlight narrow full-width" style="display: inline-block; vertical-align: top">
+        <table class="noborder" style="margin-bottom: 4px">
+          <tbody>
+            <template ngFor let-item [ngForOf]="propertyService.getCurrentFlipRepairItems()">
+              <tr [ngClass]="{'repairs-header': isCategoryBold(item)}" [ngStyle]="{'background': isCategoryBold(item) ? '#636363' : 'initial'}" *ngIf="getDisplayedCategory(item)">
+                <td style="text-align: center; font-size: 100%" [ngStyle]="{'color': isCategoryBold(item) ? '#f5f5f5' : '#848484'}" width="27.5%" (click)="toggleCategoryDisplay(item)">
+                  <span style="float: left; padding-left: 18px">{{getDisplayStatus(item) ? '-' : '+'}}</span>
+                  {{item.category}}
+                </td>
+                <td colspan="6" (click)="toggleCategoryDisplay(item)"></td>
+              </tr>
+              <tr *ngIf="getDisplayStatus(item)">
+                <td style="font-size: 100%" *ngIf="!item.labelTooltip">
+                  <div class="checkbox" style="display: inline; float: left; margin-left: 1rem">
+                    <input type="checkbox" checked [(ngModel)]="item.included" (click)="propertyService.toggleFlipRepairIncluded(item)" />
+                  </div>
+                  {{item.labelName}}
+                </td>
+                <td class="calctooltip" style="display: table-cell; text-decoration: underline; text-decoration-style: solid; font-size: 100%" *ngIf="item.labelTooltip">
+                  <div class="checkbox" style="display: inline; float: left; margin-left: 1rem">
+                    <input type="checkbox" checked [(ngModel)]="item.included" (click)="propertyService.toggleFlipRepairIncluded(item)" />
+                  </div>
+                  {{item.labelName}}
+                  <span class="calctooltiptext" style="white-space: normal">{{item.labelTooltip}}</span>
+                </td>
+                <td width="10%" style="padding: 0; font-size: 100%" *ngIf="itemHasSourceUnit(item)">
+                  <input type="number" step="0.01" style="font-size: 100%; padding: 0.55rem 1.5rem" [(ngModel)]="item.sourceUnit">
+                </td>
+                <td width="10%" style="padding: 0; font-size: 100%" *ngIf="itemHasCount(item)">
+                  <input type="number" step="0.01" style="font-size: 100%; padding: 0.55rem 1.5rem" [(ngModel)]="item.count">
+                </td>
+                <td *ngIf="item.labelIntermediary && itemHasSourceUnit(item)">{{item.labelIntermediary}}</td>
+                <td *ngIf="!item.labelIntermediary && itemHasCount(item)">pc(s)</td>
+                <td *ngIf="item.labelIntermediary && itemHasCount(item)">{{item.labelIntermediary}}</td>
+                <td colspan="2" *ngIf="!itemHasCount(item) && !itemHasSourceUnit(item)"></td>
+                <td width="30%" colspan="2" *ngIf="!itemHasCost0(item) && !itemHasCost1(item)"></td>
+                <td width="30%" colspan="2" style="padding: 0; font-size: 100%" *ngIf="!itemHasCost1(item) && itemHasCost0(item)">
+                  <span style="position: absolute; left: 8px; top: 7px">$</span>
+                  <input type="number" step="0.01" style="font-size: 100%; padding: 0.55rem 1.5rem" [(ngModel)]="item.costBase0">
+                </td>
+                <td width="15%" style="padding: 0; display: table-cell; font-size: 100%" [ngClass]="{'calctooltip': item.labelBase0}" *ngIf="itemHasCost0(item) && itemHasCost1(item)">
+                  <span style="position: absolute; left: 8px; top: 7px">$</span>
+                  <input type="number" step="0.01" style="font-size: 100%; padding: 0.55rem 1.5rem" [(ngModel)]="item.costBase0">
+                  <span class="calctooltiptext" style="transform: translateX(-50%) translateY(-50%)" *ngIf="item.labelBase0">{{item.labelBase0}}</span>
+                </td>
+                <td width="15%" style="padding: 0; display: table-cell; font-size: 100%" [ngClass]="{'calctooltip': item.labelBase1}" *ngIf="itemHasCost0(item) && itemHasCost1(item)">
+                  <span style="position: absolute; left: 8px; top: 7px">$</span>
+                  <input type="number" step="0.01" style="font-size: 100%; padding: 0.55rem 1.5rem" [(ngModel)]="item.costBase1">
+                  <span class="calctooltiptext" style="transform: translateX(-50%) translateY(-50%)" *ngIf="item.labelBase1">{{item.labelBase1}}</span>
+                </td>
+                <td *ngIf="item.labelIntermediary">per {{getSingularUnit(item.labelIntermediary)}}</td>
+                <td *ngIf="!item.labelIntermediary">per piece</td>
+                <td style="text-align: center; font-size: 100%">$ {{item.cost}}</td>
+              </tr>
+            </template>
+            <tr>
+              <td colspan="5"></td>
+              <td colspan="2"><button type="button" class="q-selector-btn" (click)="triggerSave()">Save</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+</div>
+<p style="margin: 2rem 1%" *ngIf="spmToolbarCallback">
+  <a style="margin-left: 1rem" class="button secondary small clickable" (click)="spmToolbar('undo')">
+    <span>Undo</span>
+  </a>
+  <a style="margin-left: 1rem" class="button secondary small clickable" (click)="spmToolbar('redo')">
+    <span>Redo</span>
+  </a>
+  <a style="margin-left: 4rem; margin-right: 3rem" class="button secondary small clickable" (click)="spmToolbar('addRow')">
+    <span>Add Repair Row</span>
+  </a>
+  <a style="margin-left: 1rem" class="button secondary small clickable" (click)="spmToolbar('reset')" *ngIf="false">
+    <span>Reset to Default</span>
+  </a>
+  <a style="margin-left: 1rem" class="button secondary small clickable" (click)="spmToolbar('save', !spmSaving)">
+    <span>{{spmSaving ? 'Saving..' : spmSaved ? 'Saved!' : 'Save to HIT'}}</span>
+  </a>
+</p>
+<iframe src="/html/spm.html" id="spreadsheet-module" name="spreadsheet-module" width="110%" height="800" style="margin-left: -5%; border: none; box-shadow: 0px 0px 11px -10px inset black" *ngIf="spmLoaded"></iframe>
+

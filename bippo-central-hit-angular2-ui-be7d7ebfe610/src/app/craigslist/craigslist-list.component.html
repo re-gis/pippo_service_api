@@ -1,0 +1,66 @@
+<!-- Page Title -->
+<div id="page-title" *ngIf="searchService.craigslistPage?.number">
+    <div class="container">
+
+        <h1>Craigslist posts for {{ region.toUpperCase() }}</h1>
+        <!--p>
+            {{searchService.craigslistPage.totalElements}}
+            posts posted in <strong>{{ region }}</strong>.
+        </p-->
+    </div>
+</div>
+<!-- /Page Title -->
+
+<!-- Main -->
+<div id="main" class="section-main">
+    <div class="container">
+
+        <!-- Main content -->
+        <div class="main-content" role="main">
+
+            <div class="widget table" *ngIf="searchService.craigslistPage?.number">
+                <table>
+                    <thead>
+                        <tr>
+                            <th class="right" width="20%">Posted At</th>
+                            <th class="left">Title</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let post of searchService.craigslistPageContent">
+                            <td class="right" style="font-size: 100%">
+                              <a href="{{post.sourceUrl}}" target="_blank" style="color: #363636">{{formatTime(post.timestamp)}}</a>
+                            </td>
+                            <td class="left" style="font-size: 100%; font-weight: 500">
+                              <a href="{{post.sourceUrl}}" target="_blank" style="color: #363636">{{post.title}}</a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div>
+              <div></div>
+              <ul aria-label="Pagination" class="ng2-pagination" role="navigation">
+                <li class="pagination-previous" [ngClass]="{'disabled': page < 2}">
+                  <span *ngIf="page < 2">Previous <span class="show-for-sr">page</span></span>
+                  <a aria-label="Previous page" *ngIf="page > 1"  (click)="prevPage()">Next <span class="show-for-sr">page</span></a>
+                </li>
+                <li class="current">
+                  <div>
+                    <span class="show-for-sr">You're on page</span>
+                    <span>{{page}}</span>
+                  </div>
+                </li>
+                <li class="pagination-next" [ngClass]="{'disabled': page >= totalPages}">
+                  <span *ngIf="page >= totalPages">Next <span class="show-for-sr">page</span></span>
+                  <a aria-label="Next page" *ngIf="page < totalPages" (click)="nextPage()">Next <span class="show-for-sr">page</span></a>
+                </li>
+              </ul>
+            </div>
+        </div>
+        <!-- /Main content -->
+
+    </div>
+</div>
+<!-- /Main -->

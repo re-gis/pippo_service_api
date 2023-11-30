@@ -1,0 +1,690 @@
+<div class="tabswrapper" *ngIf="mode == 'basic'">
+  <ul class="infotabs general">
+    <li class="tab" data-pane-id="pane1">Info</li>
+    <li class="tab" data-pane-id="pane2">Rooms</li>
+  </ul>
+  <div class="panes">
+    <div class="inner_panes">
+      <div class="pane">
+        <div class="inner_pane">
+          <div class="tabcontent">
+            <h2>Property Description</h2>
+            <p><!-- put property info like address here --></p>
+          </div>
+          <!-- end tabcontent -->
+        </div>
+        <!-- end inner_pane -->
+      </div>
+      <!-- end pane -->
+      <div class="pane">
+        <div class="inner_pane">
+          <div class="tabcontent no-padding map" style="height: 560px; margin-top: -20px">
+            <app-google-map [fitBounds]="true" [active]="(infoTab == 2) && getProperty().location?.latitude && getProperty().location?.longitude" [property]="{latitude: getProperty().location?.latitude, longitude: getProperty().location?.longitude, mls: {listPrice: 0}}" [subjectProperty]="{latitude: getSubjectProperty().location?.latitude, longitude: getSubjectProperty().location?.longitude, mls: {listPrice: 0}}">
+            </app-google-map>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- end inner_panes -->
+  </div>
+  <!-- end panes -->
+</div>
+<!-- end tabswrapper -->
+<div class="tabswrapper" [ngStyle]="{'width': forceWidth, 'float': floatOption}" *ngIf="mode == 'summary' || mode == 'summary-with-values' || mode == 'comps'">
+  <ul class="infotabs general">
+    <li class="tab" data-pane-id="pane0">All</li>
+    <li class="tab" data-pane-id="pane1">Description</li>
+    <li class="tab" data-pane-id="pane2">General</li>
+    <li class="tab" data-pane-id="pane3">Rooms</li>
+    <li class="tab" data-pane-id="pane4">Space</li>
+    <li class="tab" data-pane-id="pane5">Map</li>
+    <li class="tab" data-pane-id="pane6">Gallery</li>
+    <!--li class="tab" data-pane-id="pane7">Notes</li-->
+    <li class="tab" data-pane-id="pane1" style="float: right" *ngIf="hasClose" (click)="closeInfo($event)">Close</li>
+  </ul>
+  <div class="panes accordion" style="border: none">
+    <div class="inner_panes">
+      <div class="pane">
+        <div class="inner_pane">
+          <div class="widget table striped narrow full-width">
+            <table>
+              <thead>
+                <tr>
+                  <th>MLS Field</th>
+                  <th width="90%">{{getProperty().address?.oneLine}}</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Legal Description</td>
+                  <td>{{getProperty().mls?.legalDesc | placeholder:'Legal description was absent.'}}</td>
+                </tr>
+                <tr *ngIf="getProperty().mls?.status != 'Sold'">
+                  <td>Proposed Financing</td>
+                  <td>{{getProperty().mls?.proposedFinancing | placeholder:'Proposed financing was absent.'}}</td>
+                </tr>
+                <tr *ngIf="getProperty().mls?.status == 'Sold'">
+                  <td>Financing Used</td>
+                  <td>{{getProperty().mls?.listFinancing | placeholder:'Listed financing was absent.'}}</td>
+                </tr>
+                <tr *ngIf="mode == 'summary-with-values' && getProperty().comps?.arv">
+                  <td>ARV Value</td>
+                  <td>{{'$' + getProperty().comps?.arv}}</td>
+                </tr>
+                <tr *ngIf="mode == 'summary-with-values' && getProperty().comps?.asIs">
+                  <td>MA Value</td>
+                  <td>{{'$' + getProperty().comps?.asIs}}</td>
+                </tr>
+                <tr *ngIf="mode == 'summary-with-values' && getProperty().comps?.wholesale">
+                  <td>Wholesale Value</td>
+                  <td>{{'$' + getProperty().comps?.wholesale}}</td>
+                </tr>
+                <tr *ngIf="mode == 'summary-with-values' && getProperty().comps?.rentAverage">
+                  <td>Rent Average Value</td>
+                  <td>{{'$' + getProperty().comps?.rentAverage}}</td>
+                </tr>
+                <tr>
+                  <td style="vertical-align: top">Property Description</td>
+                  <td>{{getProperty().mls?.publicRemarks}}</td>
+                </tr>
+                <tr>
+                  <td>MLS #</td>
+                  <td>{{getProperty().identifier?.mlsNumber}}</td>
+                </tr>
+                <tr>
+                  <td>Lease MLS #</td>
+                  <td>{{getProperty().identifier?.mlsNumberLease | placeholder:'Not for lease in MLS'}}</td>
+                </tr>
+                <tr>
+                  <td>Status</td>
+                  <td>{{getProperty().mls?.status}}</td>
+                </tr>
+                <tr *ngIf="getProperty().mls.status == 'Sold'">
+                  <td>Close Date</td>
+                  <td>{{formatDate(getProperty().mls?.closeDate)}}</td>
+                </tr>
+                <tr>
+                  <td>Type</td>
+                  <td>{{getProperty('mls').summary?.propType || getProperty().summary?.propType}}</td>
+                </tr>
+                <tr>
+                  <td>Sub Type</td>
+                  <td>{{getProperty('mls').summary?.propSubType || getProperty().summary?.propSubType}}</td>
+                </tr>
+                <tr>
+                  <td>Lot Size / Acreage</td>
+                  <td>{{getProperty().lot?.lotSizeEnum}}</td>
+                </tr>
+                <tr>
+                  <td>Area</td>
+                  <td>{{getProperty().area?.countyUse1}}/{{getProperty().area?.munCode}}</td>
+                </tr>
+                <tr>
+                  <td>County</td>
+                  <td>{{getProperty().area?.countrysecsubd}}</td>
+                </tr>
+                <tr>
+                  <td>Subdv</td>
+                  <td>{{getProperty().area?.subdName}}</td>
+                </tr>
+                <tr>
+                  <td>Lot, Block</td>
+                  <td>{{getProperty().lot?.lotNum}}, {{getProperty().area?.blockNum}}</td>
+                </tr>
+                <tr>
+                  <td>Legal</td>
+                  <td>{{getProperty().mls?.legalDesc}}</td>
+                </tr>
+                <tr>
+                  <td>Multi Prcl</td>
+                  <td>{{standardizeYesNo(getProperty().mls?.multiParcel)}}</td>
+                </tr>
+                <tr>
+                  <td>Mud Dst</td>
+                  <td>{{standardizeYesNo(getProperty().mls?.municipalUtility)}}</td>
+                </tr>
+                <tr>
+                  <td>Will Subdivide</td>
+                  <td>{{getProperty().mls?.willSubdivide}}</td>
+                </tr>
+                <tr>
+                  <td>Lot Size</td>
+                  <td>{{getProperty().lot?.lotSizeInAcres | number:'1.3-3'}} acres ({{getProperty().lot?.lotSizeInSQFT | number:'1.0-0'}} sqft)</td>
+                </tr>
+                <tr>
+                  <td>Living Area</td>
+                  <td>{{propertyService.getFootageSourceDescription(getProperty())}}</td>
+                </tr>
+                <tr>
+                  <td>HOA</td>
+                  <td *ngIf="getProperty().mls?.hoaType == 'None'">None</td>
+                  <td *ngIf="getProperty().mls?.hoaType != 'None'">{{getProperty().mls?.hoaType}}</td>
+                </tr>
+                <tr>
+                  <td>HOA Fee</td>
+                  <td>No HOA</td>
+                </tr>
+                <tr>
+                  <td>{{getProperty().mls?.hoaPeriod}} HOA Fee</td>
+                  <td>{{getProperty().mls?.hoaFee | currency:'USD':true:'1.0-0'}}</td>
+                </tr>
+                <tr>
+                  <td>Yr Built</td>
+                  <td>{{getProperty().summary?.yearBuilt}}</td>
+                </tr>
+                <tr>
+                  <td>Stories</td>
+                  <td>{{getProperty().building?.summary?.levels}}</td>
+                </tr>
+                <tr>
+                  <td>Rooms</td>
+                  <td>{{getProperty().building?.rooms?.roomsTotal}}</td>
+                </tr>
+                <tr>
+                  <td>Bedrooms</td>
+                  <td>{{getProperty().building?.rooms?.beds}}</td>
+                </tr>
+                <tr>
+                  <td>Full Baths</td>
+                  <td>{{getProperty().building?.rooms?.bathsFull}}</td>
+                </tr>
+                <tr>
+                  <td>Half Baths</td>
+                  <td>{{getProperty().building?.rooms?.bathsHalf}}</td>
+                </tr>
+                <tr>
+                  <td>Living Areas</td>
+                  <td>{{getProperty().building?.rooms?.livingAreas}}</td>
+                </tr>
+                <tr>
+                  <td>Dining Areas</td>
+                  <td>{{getProperty().building?.rooms?.diningAreas}}</td>
+                </tr>
+                <tr>
+                  <td>Buildings</td>
+                  <td>{{getProperty().building?.summary?.bldgsNum}}</td>
+                </tr>
+                <tr>
+                  <td>Garage Type</td>
+                  <td>{{getProperty().building?.parking?.garageType | placeholder:'Not given in MLS'}}</td>
+                </tr>
+                <tr>
+                  <td>Covered Spaces</td>
+                  <td>{{getProperty().building?.parking?.coveredSpaces | placeholder:'Not given in MLS'}}</td>
+                </tr>
+                <tr>
+                  <td>Garage Spaces</td>
+                  <td>{{propertyService.getGarageSpaces(getProperty())}}</td>
+                </tr>
+                <tr>
+                  <td>Carports</td>
+                  <td>{{getProperty().building?.parking?.prkgSpaces | placeholder:'Not given in MLS'}}</td>
+                </tr>
+                <tr>
+                  <td>Garage Size, sqft</td>
+                  <td>{{getProperty().building?.parking?.prkgSize | placeholder:'Not given in MLS'}}</td>
+                </tr>
+                <tr>
+                  <td>Pool</td>
+                  <td>{{getProperty().lot?.poolInd}}</td>
+                </tr>
+                <tr>
+                  <td>Fireplaces</td>
+                  <td>{{getProperty().building?.interior?.fireplacesTotal}}</td>
+                </tr>
+                <tr>
+                  <td>Fireplace Type</td>
+                  <td>{{getProperty().building?.interior?.fireplaceType | placeholder:'Not given in MLS'}}</td>
+                </tr>
+                <tr>
+                  <td>Security System</td>
+                  <td>{{getProperty().building?.interior?.securityFeatures | placeholder:'None'}}</td>
+                </tr>
+                <tr>
+                  <td>Accessibility Features</td>
+                  <td>{{getProperty().mls?.accessibility | placeholder:'None given in MLS'}}</td>
+                </tr>
+                <tr>
+                  <td>Construction</td>
+                  <td>{{getProperty('mls').building?.construction?.constructionType || getProperty().building?.construction?.constructionType}}</td>
+                </tr>
+                <tr>
+                  <td>Foundation</td>
+                  <td>{{getProperty('mls').building?.construction?.foundationType || getProperty().building?.construction?.foundationType}}</td>
+                </tr>
+                <tr>
+                  <td>Heating / Cooling</td>
+                  <td>{{getProperty('mls').utilities?.heatingType || getProperty().utilities?.heatingType}}</td>
+                </tr>
+                <tr>
+                  <td>Kitchen Equipment</td>
+                  <td>{{getProperty().building?.interior?.applianceFeatures}}</td>
+                </tr>
+                <tr>
+                  <td>Flooring</td>
+                  <td>{{getProperty().building?.interior?.flooring}}</td>
+                </tr>
+                <tr>
+                  <td>Roof</td>
+                  <td>{{getProperty().building?.construction?.roofType | placeholder:'Not given in MLS'}}</td>
+                </tr>
+                <tr>
+                  <td>Fencing</td>
+                  <td>{{getProperty().building?.construction?.fenceType | placeholder:'Not given in MLS'}}</td>
+                </tr>
+                <tr>
+                  <td>Utilities</td>
+                  <td>{{getProperty().utilities?.utilityDesc | placeholder:'Not given in MLS'}}</td>
+                </tr>
+                <tr>
+                  <td>Lot Description</td>
+                  <td>{{getProperty().lot?.lotFeatures | placeholder:'Not given in MLS'}}</td>
+                </tr>
+                <tr>
+                  <td>Restrictions</td>
+                  <td>{{getProperty().mls?.restrictions | placeholder:'None given in MLS'}}</td>
+                </tr>
+                <tr>
+                  <td>Exterior Features</td>
+                  <td>{{getProperty().building?.construction?.exteriorFeatures | placeholder:'None given in MLS'}}</td>
+                </tr>
+                <tr>
+                  <td>Interior Features</td>
+                  <td>{{getProperty().building?.interior?.interiorFeatures | placeholder:'None given in MLS'}}</td>
+                </tr>
+                <tr>
+                  <td>Soil</td>
+                  <td>{{getProperty().mls?.soilType | placeholder:'Not given in MLS'}}</td>
+                </tr>
+                <tr>
+                  <td>Green Features</td>
+                  <td>{{getProperty().building?.interior?.greenFeatures | placeholder:'None given in MLS'}}</td>
+                </tr>
+                <tr>
+                  <td>Energy Efficiency</td>
+                  <td>{{getProperty().building?.interior?.energySavingFeatures | placeholder:'None given in MLS'}}</td>
+                </tr>
+                <tr>
+                  <td>Easements</td>
+                  <td>{{getProperty().mls?.easements | placeholder:'None given in MLS'}}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="pane">
+        <div class="inner_pane">
+          <div class="widget table striped narrow full-width">
+            <table>
+              <thead>
+                <tr>
+                  <th>MLS Field</th>
+                  <th width="90%">{{getProperty().address?.oneLine}}</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Legal Description</td>
+                  <td>{{getProperty().mls?.legalDesc | placeholder:'Legal description was absent.'}}</td>
+                </tr>
+                <tr *ngIf="getProperty().mls?.status != 'Sold'">
+                  <td>Proposed Financing</td>
+                  <td>{{getProperty().mls?.proposedFinancing | placeholder:'Proposed financing was absent.'}}</td>
+                </tr>
+                <tr *ngIf="getProperty().mls?.status == 'Sold'">
+                  <td>Financing Used</td>
+                  <td>{{getProperty().mls?.listFinancing | placeholder:'Listed financing was absent.'}}</td>
+                </tr>
+                <tr *ngIf="mode == 'summary-with-values' && getProperty().comps?.arv">
+                  <td>ARV Value</td>
+                  <td>{{'$' + getProperty().comps?.arv}}</td>
+                </tr>
+                <tr *ngIf="mode == 'summary-with-values' && getProperty().comps?.asIs">
+                  <td>MA Value</td>
+                  <td>{{'$' + getProperty().comps?.asIs}}</td>
+                </tr>
+                <tr *ngIf="mode == 'summary-with-values' && getProperty().comps?.wholesale">
+                  <td>Wholesale Value</td>
+                  <td>{{'$' + getProperty().comps?.wholesale}}</td>
+                </tr>
+                <tr *ngIf="mode == 'summary-with-values' && getProperty().comps?.rentAverage">
+                  <td>Rent Average Value</td>
+                  <td>{{'$' + getProperty().comps?.rentAverage}}</td>
+                </tr>
+                <tr>
+                  <td style="vertical-align: top">Property Description</td>
+                  <td>{{getProperty().mls?.publicRemarks}}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <!--div class="tabcontent main-info">
+            <p class="address property-info-heading">
+              <span>{{getProperty().address?.line1}}</span>, {{getProperty().address?.line2}}
+              <span style="float: right">List Price {{getProperty().mls?.listPrice | currency:'USD':true:'1.0-0'}}</span>
+            </p>
+            <div *ngIf="mode == 'summary-with-values'">
+              <div class="title four-cols" *ngIf="getProperty().comps?.arv">ARV {{'$' + getProperty().comps?.arv}}</div>
+              <div class="title four-cols" *ngIf="getProperty().comps?.asIs">MA {{'$' + getProperty().comps?.asIs}}</div>
+              <div class="title four-cols" *ngIf="getProperty().comps?.wholesale">Wholesale {{'$' + getProperty().comps?.wholesale}}</div>
+              <div class="title four-cols" *ngIf="getProperty()/comps?.rentAverage">Rents {{'$' + getProperty().comps?.rentAverage}}</div>
+            </div>
+            <br><br>
+            <div class="leftside">
+              <div class="title">Legal Description:</div>
+              <div class="value">{{getProperty().mls?.legalDesc | placeholder:'Legal description was absent.'}}</div>
+            </div>
+            <div class="rightside">
+              <div class="title" *ngIf="getProperty().mls?.status != 'Sold'">Proposed Financing:</div>
+              <div class="title" *ngIf="getProperty().mls?.status == 'Sold'">Financing Used:</div>
+              <div class="value" *ngIf="getProperty().mls?.status != 'Sold'">{{getProperty().mls?.proposedFinancing | placeholder:'Proposed financing was absent.'}}</div>
+              <div class="value" *ngIf="getProperty().mls?.status == 'Sold'">{{getProperty().mls?.listFinancing | placeholder:'Listed financing was absent.'}}</div>
+            </div>
+            <div style="background-color: white; border-bottom: 1px solid #ddd; border-right: 1px solid #ddd;">
+              <p class="property-info-field" style="padding: 10px"><b>Property Description</b></p>
+              <p style="padding: 10px">{{getProperty().mls?.publicRemarks}}</p>
+            </div>
+          </div-->
+        </div>
+      </div>
+      <div class="pane">
+        <div class="inner_pane">
+          <div class="widget table striped narrow full-width">
+            <table>
+              <thead>
+                <tr>
+                  <th>MLS Field</th>
+                  <th width="90%">Value</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>MLS #</td>
+                  <td>{{getProperty().identifier?.mlsNumber}}</td>
+                </tr>
+                <tr>
+                  <td>Lease MLS #</td>
+                  <td>{{getProperty().identifier?.mlsNumberLease | placeholder:'Not for lease in MLS'}}</td>
+                </tr>
+                <tr>
+                  <td>Status</td>
+                  <td>{{getProperty().mls?.status}}</td>
+                </tr>
+                <tr *ngIf="getProperty().mls.status == 'Sold'">
+                  <td>Close Date</td>
+                  <td>{{formatDate(getProperty().mls?.closeDate)}}</td>
+                </tr>
+                <tr>
+                  <td>Type</td>
+                  <td>{{getProperty('mls').summary?.propType || getProperty().summary?.propType}}</td>
+                </tr>
+                <tr>
+                  <td>Sub Type</td>
+                  <td>{{getProperty('mls').summary?.propSubType || getProperty().summary?.propSubType}}</td>
+                </tr>
+                <tr>
+                  <td>Lot Size / Acreage</td>
+                  <td>{{getProperty().lot?.lotSizeEnum}}</td>
+                </tr>
+                <tr>
+                  <td>Area</td>
+                  <td>{{getProperty().area?.countyUse1}}/{{getProperty().area?.munCode}}</td>
+                </tr>
+                <tr>
+                  <td>County</td>
+                  <td>{{getProperty().area?.countrysecsubd}}</td>
+                </tr>
+                <tr>
+                  <td>Subdv</td>
+                  <td>{{getProperty().area?.subdName}}</td>
+                </tr>
+                <tr>
+                  <td>Lot, Block</td>
+                  <td>{{getProperty().lot?.lotNum}}, {{getProperty().area?.blockNum}}</td>
+                </tr>
+                <tr>
+                  <td>Legal</td>
+                  <td>{{getProperty().mls?.legalDesc}}</td>
+                </tr>
+                <tr>
+                  <td>Multi Prcl</td>
+                  <td>{{standardizeYesNo(getProperty().mls?.multiParcel)}}</td>
+                </tr>
+                <tr>
+                  <td>Mud Dst</td>
+                  <td>{{standardizeYesNo(getProperty().mls?.municipalUtility)}}</td>
+                </tr>
+                <tr>
+                  <td>Will Subdivide</td>
+                  <td>{{getProperty().mls?.willSubdivide}}</td>
+                </tr>
+                <tr>
+                  <td>Lot Size</td>
+                  <td>{{getProperty().lot?.lotSizeInAcres | number:'1.3-3'}} acres ({{getProperty().lot?.lotSizeInSQFT | number:'1.0-0'}} sqft)</td>
+                </tr>
+                <tr>
+                  <td>Living Area</td>
+                  <td>{{propertyService.getFootageSourceDescription(getProperty())}}</td>
+                </tr>
+                <tr>
+                  <td>HOA</td>
+                  <td *ngIf="getProperty().mls?.hoaType == 'None'">None</td>
+                  <td *ngIf="getProperty().mls?.hoaType != 'None'">{{getProperty().mls?.hoaType}}</td>
+                </tr>
+                <tr>
+                  <td>HOA Fee</td>
+                  <td>No HOA</td>
+                </tr>
+                <tr>
+                  <td>{{getProperty().mls?.hoaPeriod}} HOA Fee</td>
+                  <td>{{getProperty().mls?.hoaFee | currency:'USD':true:'1.0-0'}}</td>
+                </tr>
+                <tr>
+                  <td>Yr Built</td>
+                  <td>{{getProperty().summary?.yearBuilt}}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="pane">
+        <div class="inner_pane">
+          <div class="widget table striped alternating narrow full-width">
+            <table>
+              <thead>
+                <tr>
+                  <th>MLS Field</th>
+                  <th width="45%">Value</th>
+                  <th>MLS Field</th>
+                  <th width="45%">Value</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Stories</td>
+                  <td>{{getProperty().building?.summary?.levels}}</td>
+                  <td>Rooms</td>
+                  <td>{{getProperty().building?.rooms?.roomsTotal}}</td>
+                </tr>
+                <tr>
+                  <td>Bedrooms</td>
+                  <td>{{getProperty().building?.rooms?.beds}}</td>
+                  <td>Full Baths</td>
+                  <td>{{getProperty().building?.rooms?.bathsFull}}</td>
+                </tr>
+                <tr>
+                  <td>Half Baths</td>
+                  <td>{{getProperty().building?.rooms?.bathsHalf}}</td>
+                  <td>Living Areas</td>
+                  <td>{{getProperty().building?.rooms?.livingAreas}}</td>
+                </tr>
+                <tr>
+                  <td>Dining Areas</td>
+                  <td>{{getProperty().building?.rooms?.diningAreas}}</td>
+                  <td>Buildings</td>
+                  <td>{{getProperty().building?.summary?.bldgsNum}}</td>
+                </tr>
+                <tr>
+                  <td>Garage Type</td>
+                  <td>{{getProperty().building?.parking?.garageType | placeholder:'Not given in MLS'}}</td>
+                  <td>Covered Spaces</td>
+                  <td>{{getProperty().building?.parking?.coveredSpaces | placeholder:'Not given in MLS'}}</td>
+                </tr>
+                <tr>
+                  <td>Garage Spaces</td>
+                  <td>{{propertyService.getGarageSpaces(getProperty())}}</td>
+                  <td>Carports</td>
+                  <td>{{getProperty().building?.parking?.prkgSpaces | placeholder:'Not given in MLS'}}</td>
+                </tr>
+                <tr>
+                  <td>Garage Size, sqft</td>
+                  <td>{{getProperty().building?.parking?.prkgSize | placeholder:'Not given in MLS'}}</td>
+                  <td>Pool</td>
+                  <td>{{getProperty().lot?.poolInd}}</td>
+                </tr>
+                <tr>
+                  <td>Fireplaces</td>
+                  <td>{{getProperty().building?.interior?.fireplacesTotal}}</td>
+                  <td>Fireplace Type</td>
+                  <td>{{getProperty().building?.interior?.fireplaceType | placeholder:'Not given in MLS'}}</td>
+                </tr>
+                <tr>
+                  <td>Security System</td>
+                  <td>{{getProperty().building?.interior?.securityFeatures | placeholder:'None'}}</td>
+                  <td>Accessibility Features</td>
+                  <td>{{getProperty().mls?.accessibility | placeholder:'None given in MLS'}}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="pane">
+        <div class="inner_pane">
+          <div class="widget table striped narrow full-width">
+            <table>
+              <thead>
+                <tr>
+                  <th>MLS Field</th>
+                  <th width="90%">Value</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Construction</td>
+                  <td>{{getProperty('mls').building?.construction?.constructionType || getProperty().building?.construction?.constructionType}}</td>
+                </tr>
+                <tr>
+                  <td>Foundation</td>
+                  <td>{{getProperty('mls').building?.construction?.foundationType || getProperty().building?.construction?.foundationType}}</td>
+                </tr>
+                <tr>
+                  <td>Heating / Cooling</td>
+                  <td>{{getProperty('mls').utilities?.heatingType || getProperty().utilities?.heatingType}}</td>
+                </tr>
+                <tr>
+                  <td>Kitchen Equipment</td>
+                  <td>{{getProperty().building?.interior?.applianceFeatures}}</td>
+                </tr>
+                <tr>
+                  <td>Flooring</td>
+                  <td>{{getProperty().building?.interior?.flooring}}</td>
+                </tr>
+                <tr>
+                  <td>Roof</td>
+                  <td>{{getProperty().building?.construction?.roofType | placeholder:'Not given in MLS'}}</td>
+                </tr>
+                <tr>
+                  <td>Fencing</td>
+                  <td>{{getProperty().building?.construction?.fenceType | placeholder:'Not given in MLS'}}</td>
+                </tr>
+                <tr>
+                  <td>Utilities</td>
+                  <td>{{getProperty().utilities?.utilityDesc | placeholder:'Not given in MLS'}}</td>
+                </tr>
+                <tr>
+                  <td>Lot Description</td>
+                  <td>{{getProperty().lot?.lotFeatures | placeholder:'Not given in MLS'}}</td>
+                </tr>
+                <tr>
+                  <td>Restrictions</td>
+                  <td>{{getProperty().mls?.restrictions | placeholder:'None given in MLS'}}</td>
+                </tr>
+                <tr>
+                  <td>Exterior Features</td>
+                  <td>{{getProperty().building?.construction?.exteriorFeatures | placeholder:'None given in MLS'}}</td>
+                </tr>
+                <tr>
+                  <td>Interior Features</td>
+                  <td>{{getProperty().building?.interior?.interiorFeatures | placeholder:'None given in MLS'}}</td>
+                </tr>
+                <tr>
+                  <td>Soil</td>
+                  <td>{{getProperty().mls?.soilType | placeholder:'Not given in MLS'}}</td>
+                </tr>
+                <tr>
+                  <td>Green Features</td>
+                  <td>{{getProperty().building?.interior?.greenFeatures | placeholder:'None given in MLS'}}</td>
+                </tr>
+                <tr>
+                  <td>Energy Efficiency</td>
+                  <td>{{getProperty().building?.interior?.energySavingFeatures | placeholder:'None given in MLS'}}</td>
+                </tr>
+                <tr>
+                  <td>Easements</td>
+                  <td>{{getProperty().mls?.easements | placeholder:'None given in MLS'}}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="pane">
+        <div class="inner_pane">
+          <div class="tabcontent no-padding map" style="height: 560px; margin-top: -20px">
+            <app-google-map
+                [fitBounds]="true" [mapMode]="'sat'"
+                [active]="(infoTab == 5) && getProperty().location?.latitude && getProperty().location?.longitude"
+                [property]="{latitude: getProperty().location?.latitude, longitude: getProperty().location?.longitude, mls: {listPrice: getProperty().mls?.listPrice}}"
+                [subjectProperty]="{latitude: getSubjectProperty().location?.latitude, longitude: getSubjectProperty().location?.longitude, mls: {listPrice: getSubjectProperty().mls?.listPrice}}">
+            </app-google-map>
+          </div>
+        </div>
+      </div>
+      <div class="pane">
+        <div class="inner_pane">
+          <div class="tabcontent no-padding">
+            <div [id]="ninjaSliderId" class="ninja-slider infotab propertyGallerySlider" *ngIf="getPhotos(getProperty('hitMergedResponse').resources?.photos) && (getPhotos(getProperty('hitMergedResponse').resources?.photos).length > 0)">
+              <div>
+                <div class="slider-inner">
+                  <ul>
+                    <li *ngFor="let photo of getPhotos(getProperty('hitMergedResponse').resources?.photos)">
+                      <a class="ns-img" href="{{photo}}"></a>
+                    </li>
+                  </ul>
+                  <!--div class="fs-icon" title="Expand/Close"></div-->
+                </div>
+                <div id="thumbs">
+                  <span *ngFor="let photo of getPhotos(getProperty('hitMergedResponse').resources?.photos) let i = index" (click)="showImage(i)">
+                    <img src="{{photo}}">
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="pane">
+        <div class="inner_pane">
+          <div class="tabcontent">
+            <form>
+              <textarea class="comp-textarea" placeholder="Personal notes are autosaved..."></textarea>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

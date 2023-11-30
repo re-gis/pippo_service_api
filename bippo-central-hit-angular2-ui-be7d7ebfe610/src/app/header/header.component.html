@@ -1,0 +1,45 @@
+<!-- Header -->
+<header id="page-header" role="banner">
+  <div class="container">
+    <div class="site-branding">
+      <div class="site-logo" style="color: white">
+        <a title="{{siteTitle}}" style="margin-top: -10px; margin-bottom: -6px; width: 100%">
+          {{siteTitle}}
+          <span style="float: right; font-size: 1rem; padding-top: 4px; padding-right: 1rem; font-weight: 300">{{searchService.relevantMlsContext}}</span>
+        </a>
+      </div>
+    </div>
+    <nav role="navigation" id="site-nav-container">
+      <a class="visually-hidden skip-link" href="dashboard#main" title="Skip to content">Skip to content</a>
+      <div class="site-nav">
+        <ul>
+          <li><a [routerLink]="['/dashboard']" [routerLinkActive]="'selected'">Dashboard</a></li>
+          <li><a [routerLink]="['/search']" [routerLinkActive]="'selected'">Search</a></li>
+          <li><a [routerLink]="['/watchlist']" [routerLinkActive]="'selected'">Watchlist</a><span class="notification number" *ngIf="searchService.watchlistArray && (searchService.watchlistArray.length > 0)">{{searchService.watchlistArray.length}}</span></li>
+          <li><a href="dashboard#">My Offers</a><span class="notification number">1</span></li>
+          <!--li>
+            <a class="clickable" [fullScreen]="isFullScreen" [ngClass]="{'fullscreen-out': !isFullScreen, 'fullscreen-in': isFullScreen}" (cancel)="cancelFullScreen()" (click)="toggleFullscreen()"></a>
+          </li-->
+          <li class="my-profile">
+            <a>My Profile</a>
+            <ul class="submenu">
+              <li><a [routerLink]="['/profile/profile']">Profile</a></li>
+              <li><a [routerLink]="['/profile/settings']">Settings</a></li>
+              <!--li><a [routerLink]="['/profile/preferences']">Preferences</a></li>
+              <li><a [routerLink]="['/profile/contract']">Contract</a></li>
+              <li><a [routerLink]="['/profile/account']">Account</a></li-->
+              <li><a class="clickable" (click)="logout()">Logout</a></li>
+            </ul>
+          </li>
+          <li class="my-profile tutorials" *ngIf="tutorialService.videoUrl">
+            <a class="clickable" (click)="tutorial()"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Capa_1" x="0px" y="0px" width="24px" height="24px" viewBox="0 0 612 612" xml:space="preserve"><g><g id="Info"><g><path d="M306,153c-21.114,0-38.25,17.136-38.25,38.25S284.886,229.5,306,229.5s38.25-17.117,38.25-38.25S327.133,153,306,153z M306,267.75c-21.114,0-38.25,17.117-38.25,38.25v114.75c0,21.114,17.136,38.25,38.25,38.25s38.25-17.136,38.25-38.25V306 C344.25,284.886,327.133,267.75,306,267.75z M306,0C137.279,0,0,137.279,0,306s137.279,306,306,306s306-137.279,306-306 S474.721,0,306,0z M306,554.625C168.893,554.625,57.375,443.088,57.375,306S168.893,57.375,306,57.375     c137.088,0,248.625,111.537,248.625,248.625S443.088,554.625,306,554.625z" fill="#FFFFFF"></path></g></g></g></svg></a>
+             <ul class="submenu">
+               <li><a class="clickable" (click)="tutorial()">View Page Tutorial</a></li>
+             </ul>
+           </li>
+        </ul>
+      </div>
+    </nav>
+  </div>
+</header>
+<!-- /Header -->

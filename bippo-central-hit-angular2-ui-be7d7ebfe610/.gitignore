@@ -1,0 +1,50 @@
+# See http://help.github.com/ignore-files/ for more about ignoring files.
+
+# compiled output
+/dist
+/build
+/tmp
+/.tmp
+error.log
+/public/css/style_older.css
+/public/css/style_orig.css
+/ts-node
+
+# dependencies
+/node_modules
+/bower_components
+
+# IDEs and editors
+/.idea
+.project
+.classpath
+*.launch
+.settings/
+
+# misc
+/.sass-cache
+/connect.lock
+/coverage/*
+/libpeerconnection.log
+npm-debug.log
+testem.log
+/typings
+/startserver.sh
+/cert.pem
+/key.pem
+
+# e2e
+/e2e/*.js
+/e2e/*.map
+
+/src/**/*.js
+/src/**/*.map
+
+/config/environment.ts
+/config/*.js
+/config/*.map
+
+#System Files
+.DS_Store
+Thumbs.db
+

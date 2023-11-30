@@ -1,0 +1,6 @@
+FROM nginx:1.20.2
+
+RUN mkdir -p /usr/share/nginx/hit
+ADD dist /usr/share/nginx/hit/
+
+COPY nginx.prod.conf /etc/nginx/nginx.conf

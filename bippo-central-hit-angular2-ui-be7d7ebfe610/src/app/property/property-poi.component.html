@@ -1,0 +1,26 @@
+<div class="padding">
+  <div class="community_sec" itemscope="" itemtype="http://schema.org/ListItem">
+    <!--COMMUNITY QUICK FACTS HEADING SECTION STARTS HERE-->
+    <div class="left_right_sec">
+      <div class="pull-left">
+        <h3 class="community_heading">Points of Interest near {{poiArea}}</h3>
+      </div>
+    </div>
+  </div>
+  <div>
+    <div *ngFor="let pois of poiIndexed; let i = index">
+      <h3 (click)="togglePoiShown(i)" [innerHTML]="getPoiLabel(i)"></h3>
+      <table *ngIf="poiShown[i]" class="list-points">
+        <tbody>
+        <tr *ngFor="let poi of pois">
+          <td>
+            <h4 class="title">{{poi.name}}</h4>
+            <h5 class="Industry">{{poi.industry}}</h5>
+          </td>
+          <td>{{poi.street + ', ' + poi.city + ', ' + poi.state + ' ' + poi.zipcode}}</td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

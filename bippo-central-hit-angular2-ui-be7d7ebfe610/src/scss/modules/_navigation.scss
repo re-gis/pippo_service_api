@@ -1,0 +1,144 @@
+//  Navigation
+.widget.navigation {
+  background: none;
+  header {
+    background: darken($white, 5%);
+  }
+  h2 {
+    margin: 0;
+    padding: rem($spacing-s) rem($spacing-m);
+    padding-left: rem($spacing-m + 5); // add 5px for border when selected
+  }
+  ul {
+    @include list-reset;
+    border-top: 1px solid $bordercolor;
+    background: darken($white, 5%);
+  }
+  a {
+    @include font-size(18);
+    font-weight: $font-bold;
+    padding: rem($spacing-s/1.25) rem($spacing-m);
+    padding-left: rem($spacing-m + 5); // add 5px for border when selected
+    border-bottom: 1px solid $bordercolor;
+    color: $grey;
+    display: block;
+    position: relative;
+    &.selected, &:hover {
+      background: $grey;
+      color: $white;
+      &:before {
+        content: "";
+        display: block;
+        width: rem(5);
+        height: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+        background: $darkgrey;
+      }
+    }
+  }
+}
+
+// Added navigation
+// .nav {
+//   margin-bottom: 0;
+//   padding-left: 0;
+//   /* Override default ul/ol */
+//   list-style: none;
+//   &:before, &:after {
+//     content: " ";
+//     /* 1 */
+//     display: table;
+//     /* 2 */
+//   }
+//   &:after {
+//     clear: both;
+//   }
+//   > li {
+//     position: relative;
+//     display: block;
+//     font-weight: $font-regular;
+//     > a {
+//       position: relative;
+//       display: block;
+//       padding: rem(14) rem(25);
+//       border-bottom: 0;
+//       color: darken($white, 10%);
+//       // font-size: rem(22);
+//       // font-weight: $font-bold;
+//       &:hover, &:focus {
+//         // text-decoration: none;
+//         // background-color: #eee;
+//         // color: lighten($brandcolor, 40%);
+//       }
+//       &.active {
+//         color: darken($white, 50%);
+//       }
+//       > img {
+//         max-width: none;
+//       }
+//     }
+//     &.disabled {
+//       > a {
+//         color: $grey;
+//       }
+//       &:hover, &:focus {
+//         color: $grey;
+//         text-decoration: none;
+//         cursor: not-allowed;
+//         background-color: transparent;
+//       }
+//     }
+//   }
+//   .open {
+//     > a, > a:hover, > a:focus {
+//       background-color: #eee;
+//       border-color: #337ab7;
+//     }
+//   }
+//   .nav-divider {
+//     height: 1px;
+//     margin: 9px 0;
+//     overflow: hidden;
+//     background-color: #e5e5e5;
+//   }
+// }
+
+app-video-tutorial>#page-title {
+    text-align: center;
+    padding: 2rem 0 4rem 0;
+    /* background-image: linear-gradient(#5a160b, hsl(0, 0%, 0%)); */
+    /* background-image: linear-gradient(#b4321d, 10%, white); */
+    /* background-image: linear-gradient(#e3e2e2, #cac9c9); */
+    box-shadow: inset 0px -10px 30px 0px;
+}
+
+app-video-tutorial>#page-title>div {
+    width: 1024px;
+    margin: 0 auto;
+    color: black;
+}
+
+app-video-tutorial>#page-title>div>h2 {
+    text-align: left;
+}
+
+app-video-tutorial>#page-title>div>h2>small {
+    float: right;
+    padding: 4px 20px;
+}
+
+header[role="banner"] .site-nav li.tutorials {
+    float: right;
+    text-align: center;
+}
+
+header[role="banner"] .site-nav li.tutorials a {
+    padding: 14px 20px;
+}
+
+header[role="banner"] .site-nav li.tutorials a:before {
+    content: none !important;
+}
+

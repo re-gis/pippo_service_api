@@ -1,0 +1,44 @@
+<!-- Main -->
+<div id="main" class="section-main">
+    <div class="container">
+    <!-- Main content -->
+    <div class="main-content" role="main">
+        <div class="widget login" style="width: 500px; margin-left: -250px">
+            <header>
+                <h2>Verify Registration</h2>
+            </header>
+            <div class="form no-labels">
+                <form #f="ngForm" (ngSubmit)="onSubmit()">
+                    <div class="message error" [hidden]="!showError">
+                        <p [hidden]="showDuplicate">There was a problem with your registration code. You can register <a [routerLink]="['/register']"><u>here</u></a>.</p>
+                        <p [hidden]="!showDuplicate">Your account has already been verified. Please proceed to login <a [routerLink]="['/login']"><u>here</u></a>.</p>
+                    </div>
+                    <div class="message success" [hidden]="!showSuccess">
+                        <p>Congratulations! You are now registered. You can log in <a [routerLink]="['/login']"><u>here</u></a> to activate your free trial.</p>
+                    </div>
+                    <div class="message success" [hidden]="!showPending">
+                        <p>Please wait while we process your request.</p>
+                    </div>
+                    <fieldset [hidden]="showPending || showSuccess">
+                        <div class="group">
+                            <label for="code">Registration code</label>
+                            <input type="text" [(ngModel)]="code" name="code" placeholder="Code" required [disabled]="showPending" />
+                        </div>
+                    </fieldset>
+                    <fieldset [hidden]="showPending || showSuccess">
+                        <div class="group button-group">
+                            <input type="submit" value="Verify" [disabled]="!f.valid || showPending">
+                        </div>
+                    </fieldset>
+                </form>
+                <p [hidden]="showPending"><a [routerLink]="['/login']">Log in here.</a></p>
+            </div>
+        </div>
+        <div class="widget login" style="top: 85%">
+            <a class="button secondary small" href="https://homeinvestortool.com">Back to homeinvestortool.com</a>
+        </div>
+    </div>
+    <!-- /Main content -->
+    </div>
+</div>
+<!-- /Main -->

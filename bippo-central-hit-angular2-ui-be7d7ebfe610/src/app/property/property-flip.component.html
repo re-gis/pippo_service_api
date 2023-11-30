@@ -1,0 +1,375 @@
+<div class="content full-width">
+    <div class="widget calculator accordion">
+      <div class="widget table narrow full-width" style="width: 32%; display: inline-block; left: 18%; vertical-align: top">
+        <table class="noborder" style="margin-bottom: 4px">
+          <thead style="background: #636363">
+            <th colspan="2" style="text-align: center">General Values</th>
+          </thead>
+          <tbody>
+            <tr>
+              <td width="40%">Funding Type</td>
+              <td>
+                <input type="radio" name="fundtype" id="ftCash" value="cash" [(ngModel)]="propertyService.propertyFlip.purchaseClosingCost.selected" style="margin-right: .25rem">
+                <label for="ftCash" style="margin-bottom: 0">Cash</label>
+                <input type="radio" name="fundtype" id="ftFinanced" value="financed" [(ngModel)]="propertyService.propertyFlip.purchaseClosingCost.selected" style="margin-left: .5rem">
+                <label for="ftFinanced" style="margin-bottom: 0">Financed</label>
+              </td>
+            </tr>
+            <tr>
+              <td>List Price</td>
+              <td style="font-size: 120%">{{propertyService.getListPrice() == 'Off Market' ? '' : '$'}}{{propertyService.getListPrice()}}</td>
+            </tr>
+            <tr>
+              <td>Resale Price</td>
+              <td>
+                <input type="radio" name="markettype" id="mtArv" value="arv" [(ngModel)]="propertyService.propertyCommon.market.type" style="margin-right: .25rem">
+                <label for="mtArv" style="margin-bottom: 0">ARV</label>
+                <input type="radio" name="markettype" id="mtAsIs" value="asIs" [(ngModel)]="propertyService.propertyCommon.market.type" style="margin-right: .25rem; margin-left: .5rem">
+                <label for="mtAsIs" style="margin-bottom: 0">MA</label>
+                <input type="radio" name="markettype" id="mtOther" value="other" [(ngModel)]="propertyService.propertyCommon.market.type" style="margin-right: .25rem; margin-left: .5rem">
+                <label for="mtOther" style="margin-bottom: 0">Custom</label>
+              </td>
+            </tr>
+            <tr>
+              <td *ngIf="propertyService.propertyCommon.market.type == 'arv'">ARV Value</td>
+              <td *ngIf="propertyService.propertyCommon.market.type == 'asIs'">MA Value</td>
+              <td *ngIf="propertyService.propertyCommon.market.type == 'other'">Custom Value</td>
+              <td style="font-size: 120%" *ngIf="propertyService.propertyCommon.market.type == 'arv'">$ {{propertyService.property.market.arv | number:'1.0-0'}}</td>
+              <td style="font-size: 120%" *ngIf="propertyService.propertyCommon.market.type == 'asIs'">$ {{propertyService.property.market.asIs | number:'1.0-0'}}</td>
+              <td style="padding: 0; font-size: 120%" *ngIf="propertyService.propertyCommon.market.type == 'other'">
+                <span style="position: absolute; left: 8px; top: 7px">$</span>
+                <input type="number" style="font-size: 100%; padding: 0.55rem 1.5rem" [(ngModel)]="propertyService.propertyCommon.market.otherValue">
+              </td>
+            </tr>
+            <tr>
+              <td>Repair Source</td>
+              <td>
+                <input type="radio" name="repairremodel" id="rrHit" value="rrHit" [(ngModel)]="propertyService.propertyFlipData.repairRemodelType" style="margin-right: .25rem">
+                <label for="rrHit" style="margin-bottom: 0">Repair Calculator</label>
+                <input type="radio" name="repairremodel" id="rrCustom" value="rrCustom" [(ngModel)]="propertyService.propertyFlipData.repairRemodelType" style="margin-right: .25rem; margin-left: .5rem">
+                <label for="rrCustom" style="margin-bottom: 0">Custom</label>
+              </td>
+            </tr>
+            <tr>
+              <td>Repair Cost</td>
+              <td style="padding-bottom: 0; font-size: 120%" *ngIf="propertyService.propertyFlipData.repairRemodelType == 'rrHit'">
+                $ {{propertyService.propertyFlipData.repairRemodelTotal | number:'1.0-0'}}
+                <br>
+                <a style="color: #767a82; cursor: pointer" (click)="tabsetService.select('property-tabs', 'tab-repairs')"><span style="float: right">Go to Repair Calc &#8594;</span></a>
+              </td>
+              <td style="padding: 0; font-size: 120%" *ngIf="propertyService.propertyFlipData.repairRemodelType == 'rrCustom'">
+                <span style="position: absolute; left: 8px; top: 7px">$</span>
+                <input type="number" style="font-size: 100%; padding: 0.55rem 1.5rem" [(ngModel)]="propertyService.propertyFlipData.repairRemodelCustomTotal">
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="widget table narrow full-width" style="width: 32%; display: inline-block; left: 18%; vertical-align: top">
+        <table class="noborder large-col2" *ngIf="propertyService.propertyFlip.purchaseClosingCost.selected == 'cash'">
+          <thead style="background: #636363">
+            <th colspan="2" style="text-align: center">Purchase Closing Costs: ${{propertyService.propertyFlipData.purchaseClosingCostTotal | number:'1.0-0'}}</th>
+          </thead>
+          <tbody>
+            <tr>
+              <td width="40%">Title Policy Paid By</td>
+              <td>
+                <input type="radio" name="tpolicy" id="sellerPays" value="sellerPays" [ngModel]="titlePolicyParty" (click)="setTitlePolicy(false)" style="margin-right: .25rem">
+                <label for="sellerPays" style="margin-bottom: 0">Seller</label>
+                <input type="radio" name="tpolicy" id="buyerPays" value="buyerPays" [ngModel]="titlePolicyParty" (click)="setTitlePolicy(true)" style="margin-left: .5rem">
+                <label for="buyerPays" style="margin-bottom: 0">Buyer</label>
+              </td>
+            </tr>
+            <tr *ngIf="propertyService.propertyFlip.purchaseClosingCost.buyerPays">
+              <td>Title Policy</td>
+              <td style="padding: 0">
+                <span style="position: absolute; left: 8px; top: 7px">$</span>
+                <input type="number" style="font-size: 100%; padding: 0.55rem 1.5rem" [(ngModel)]="propertyService.propertyFlip.purchaseClosingCost.cash.titlePolicy">
+              </td>
+            </tr>
+            <tr>
+              <td>Title Company Fees</td>
+              <td style="padding: 0">
+                <span style="position: absolute; left: 8px; top: 7px">$</span>
+                <input type="number" style="font-size: 100%; padding: 0.55rem 1.5rem" [(ngModel)]="propertyService.propertyFlip.purchaseClosingCost.cash.titleCompanyFees">
+              </td>
+            </tr>
+            <tr>
+              <td>Title Company Escrow</td>
+              <td style="padding: 0">
+                <span style="position: absolute; left: 8px; top: 7px">$</span>
+                <input type="number" style="font-size: 100%; padding: 0.55rem 1.5rem" [(ngModel)]="propertyService.propertyFlip.purchaseClosingCost.cash.titleCompanyEscrowFees">
+              </td>
+            </tr>
+            <tr>
+              <td>Insurance</td>
+              <td style="padding: 0">
+                <span style="position: absolute; left: 8px; top: 7px">$</span>
+                <input type="number" style="font-size: 100%; padding: 0.55rem 1.5rem" [(ngModel)]="propertyService.propertyFlip.purchaseClosingCost.cash.insurance">
+              </td>
+            </tr>
+            <tr>
+              <td>Survey</td>
+              <td style="padding: 0">
+                <span style="position: absolute; left: 8px; top: 7px">$</span>
+                <input type="number" style="font-size: 100%; padding: 0.55rem 1.5rem" [(ngModel)]="propertyService.propertyFlip.purchaseClosingCost.cash.survey">
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <table class="noborder large-col2" style="margin-bottom: -136px" *ngIf="propertyService.propertyFlip.purchaseClosingCost.selected == 'financed'">
+          <thead style="background: #636363">
+            <th colspan="2" style="text-align: center">Purchase Closing Costs: ${{propertyService.propertyFlipData.purchaseClosingCostTotal | number:'1.0-0'}}</th>
+          </thead>
+          <tbody>
+            <tr>
+              <td width="40%">Title Policy Paid By</td>
+              <td>
+                <input type="radio" name="tpolicy" id="sellerPays" value="sellerPays" [ngModel]="titlePolicyParty" (click)="setTitlePolicy(false)" style="margin-right: .25rem">
+                <label for="sellerPays" style="margin-bottom: 0">Seller</label>
+                <input type="radio" name="tpolicy" id="buyerPays" value="buyerPays" [ngModel]="titlePolicyParty" (click)="setTitlePolicy(true)" style="margin-left: .5rem">
+                <label for="buyerPays" style="margin-bottom: 0">Buyer</label>
+              </td>
+            </tr>
+            <tr *ngIf="propertyService.propertyFlip.purchaseClosingCost.buyerPays">
+              <td>Title Policy</td>
+              <td style="padding: 0">
+                <span style="position: absolute; left: 8px; top: 7px">$</span>
+                <input type="number" style="font-size: 100%; padding: 0.55rem 1.5rem" [(ngModel)]="propertyService.propertyFlip.purchaseClosingCost.financed.titlePolicy">
+              </td>
+            </tr>
+            <tr>
+              <td>Title Company Fees</td>
+              <td style="padding: 0">
+                <span style="position: absolute; left: 8px; top: 7px">$</span>
+                <input type="number" style="font-size: 100%; padding: 0.55rem 1.5rem" [(ngModel)]="propertyService.propertyFlip.purchaseClosingCost.financed.titleCompanyFees">
+              </td>
+            </tr>
+            <tr>
+              <td>Title Company Escrow</td>
+              <td style="padding: 0">
+                <span style="position: absolute; left: 8px; top: 7px">$</span>
+                <input type="number" style="font-size: 100%; padding: 0.55rem 1.5rem" [(ngModel)]="propertyService.propertyFlip.purchaseClosingCost.financed.titleCompanyEscrowFees">
+              </td>
+            </tr>
+            <tr>
+              <td>Insurance</td>
+              <td style="padding: 0">
+                <span style="position: absolute; left: 8px; top: 7px">$</span>
+                <input type="number" style="font-size: 100%; padding: 0.55rem 1.5rem" [(ngModel)]="propertyService.propertyFlip.purchaseClosingCost.financed.insurance">
+              </td>
+            </tr>
+            <tr>
+              <td>Survey</td>
+              <td style="padding: 0">
+                <span style="position: absolute; left: 8px; top: 7px">$</span>
+                <input type="number" style="font-size: 100%; padding: 0.55rem 1.5rem" [(ngModel)]="propertyService.propertyFlip.purchaseClosingCost.financed.survey">
+              </td>
+            </tr>
+            <tr>
+              <td>Real Estate Tax Escrow</td>
+              <td style="padding: 0">
+                <span style="position: absolute; left: 8px; top: 7px">$</span>
+                <input type="number" style="font-size: 100%; padding: 0.55rem 1.5rem" [(ngModel)]="propertyService.propertyFlip.purchaseClosingCost.financed.taxEscrow">
+              </td>
+            </tr>
+            <tr>
+              <td>Loan Origination</td>
+              <td style="padding: 0">
+                <span style="position: absolute; left: 8px; top: 7px">$</span>
+                <input type="number" style="font-size: 100%; padding: 0.55rem 1.5rem" [(ngModel)]="propertyService.propertyFlip.purchaseClosingCost.financed.loanOrigination">
+              </td>
+            </tr>
+            <tr>
+              <td>Down Payment %</td>
+              <td style="padding: 0">
+                <span style="position: absolute; left: 71%; top: 7px">%</span>
+                <input type="number" style="font-size: 100%; padding: 0.55rem 1.5rem" min="0" max="100" step="0.5"
+                    [ngModel]="decimalToPercent(propertyService.propertyFlip.purchaseClosingCost.financed.loanDownPaymentFraction)"
+                    (ngModelChange)="propertyService.propertyFlip.purchaseClosingCost.financed.loanDownPaymentFraction = $event / 100">
+              </td>
+            </tr>
+            <tr>
+              <td>Down Payment Amount</td>
+              <td>$ {{getLoanDownPaymentDollars() | number:'1.0-0'}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="widget table narrow full-width" style="width: 32%; display: inline-block; left: 18%; vertical-align: top">
+        <table class="noborder large-col2">
+          <thead style="background: #636363">
+            <th colspan="2" style="text-align: center">Holding Costs: ${{propertyService.propertyFlipData.expensesTotal | number:'1.0-0'}}</th>
+          </thead>
+          <tbody>
+            <tr>
+              <td width="40%"># of Months</td>
+              <td style="padding: 0">
+                <input type="number" style="font-size: 100%; padding: 0.55rem 1.5rem" [(ngModel)]="propertyService.propertyFlip.expenses.months">
+              </td>
+            </tr>
+            <tr>
+              <td class="calctooltip" style="display: table-cell; text-decoration: underline; text-decoration-style: dashed">
+                Real Estate Taxes
+                <span class="calctooltiptext" style="left: -10%">Real Estate Taxes displayed here are tracked and counted as an expense within the Selling Closing Costs.</span>
+              </td>
+              <td style="padding: 0">
+                <span style="position: absolute; left: 8px; top: 7px">$</span>
+                <input type="number" style="font-size: 100%; padding: 0.55rem 1.5rem" [(ngModel)]="propertyService.propertyFlipData.expenses.realEstateTaxes">
+                <span style="position: absolute; left: 60%; top: 7px">/ mo</span>
+              </td>
+            </tr>
+            <tr>
+              <td>Insurance</td>
+              <td style="padding: 0">
+                <span style="position: absolute; left: 8px; top: 7px">$</span>
+                <input type="number" style="font-size: 100%; padding: 0.55rem 1.5rem" [(ngModel)]="propertyService.propertyFlipData.expenses.insurance">
+                <span style="position: absolute; left: 60%; top: 7px">/ mo</span>
+              </td>
+            </tr>
+            <tr *ngIf="propertyService.getCurrentProperty().mls?.hoaFee">
+              <td>HOA Fee</td>
+              <td style="padding: 0">
+                <span style="position: absolute; left: 8px; top: 7px">$</span>
+                <input type="number" style="font-size: 100%; padding: 0.55rem 1.5rem" [(ngModel)]="propertyService.propertyFlipData.expenses.hoa">
+                <span style="position: absolute; left: 60%; top: 7px">/ mo</span>
+              </td>
+            </tr>
+            <tr>
+              <td>Utilities</td>
+              <td style="padding: 0">
+                <span style="position: absolute; left: 8px; top: 7px">$</span>
+                <input type="number" style="font-size: 100%; padding: 0.55rem 1.5rem" [(ngModel)]="propertyService.propertyFlipData.expenses.utilityCosts.other">
+                <span style="position: absolute; left: 60%; top: 7px">/ mo</span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="widget table narrow full-width" style="width: 32%; display: inline-block; left: 18%; vertical-align: top">
+        <table class="noborder large-col2">
+          <thead style="background: #636363">
+            <th colspan="2" style="text-align: center">Selling Closing Costs: ${{propertyService.propertyFlipData.sellingClosingCostTotal | number:'1.0-0'}}</th>
+          </thead>
+          <tbody>
+            <tr>
+              <td width="40%">Title Policy</td>
+              <td style="padding: 0">
+                <span style="position: absolute; left: 8px; top: 7px">$</span>
+                <input type="number" style="font-size: 100%; padding: 0.55rem 1.5rem" [(ngModel)]="propertyService.propertyFlip.sellingClosingCost.titlePolicy">
+              </td>
+            </tr>
+            <tr>
+              <td>Title Company Fees</td>
+              <td style="padding: 0">
+                <span style="position: absolute; left: 8px; top: 7px">$</span>
+                <input type="number" style="font-size: 100%; padding: 0.55rem 1.5rem" [(ngModel)]="propertyService.propertyFlip.sellingClosingCost.titleCompanyFees">
+              </td>
+            </tr>
+            <tr>
+              <td>Commission %</td>
+              <td style="padding: 0">
+                <span style="position: absolute; left: 71%; top: 7px">%</span>
+                <input type="number" style="font-size: 100%; padding: 0.55rem 1.5rem" min="0" max="100"
+                    [ngModel]="decimalToPercent(propertyService.propertyFlip.sellingClosingCost.realEstateCommission)"
+                    (ngModelChange)="propertyService.propertyFlip.sellingClosingCost.realEstateCommission = $event / 100">
+              </td>
+            </tr>
+            <tr>
+              <td>Commission Amount</td>
+              <td>$ {{getRealEstateCommDollars() | number:'1.0-0'}}</td>
+            </tr>
+            <tr>
+              <td>Real Estate Taxes</td>
+              <td>$ {{propertyService.propertyFlip.expenses.realEstateTaxes | number:'1.0-0'}}</td>
+            </tr>
+            <tr>
+              <td>Misc Lender</td>
+              <td style="padding: 0">
+                <span style="position: absolute; left: 8px; top: 7px">$</span>
+                <input type="number" style="font-size: 100%; padding: 0.55rem 1.5rem" [(ngModel)]="propertyService.propertyFlip.sellingClosingCost.miscLender">
+              </td>
+            </tr>
+            <tr>
+              <td>Other</td>
+              <td style="padding: 0">
+                <span style="position: absolute; left: 8px; top: 7px">$</span>
+                <input type="number" style="font-size: 100%; padding: 0.55rem 1.5rem" [(ngModel)]="propertyService.propertyFlip.sellingClosingCost.other">
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="widget table narrow full-width" style="width: 32%; display: inline-block; left: 50.3%; vertical-align: top">
+        <table class="noborder large-col1 large-col2">
+          <thead>
+            <th colspan="2" style="text-align: center">ROI and Bid</th>
+          </thead>
+          <tbody>
+            <tr>
+              <td width="40%">Cost to Sell</td>
+              <td>$ {{propertyService.propertyFlipData.costToFlip | number:'1.0-0'}}</td>
+            </tr>
+            <tr>
+              <td>ROI ({{propertyService.propertyFlipData.ROIFormatted}})</td>
+              <td style="padding: 0">
+                <input type="range" min="0" max="100" step="0.5" class="slider ng-dirty" style="margin-top: 9px; margin-left: 10%; width: 80%"
+                    [ngModel]="propertyService.propertyFlipData.roiSliderPercent"
+                    (input)="handleChangeProfitSlider($event)"
+                    (change)="handleFixProfitSlider($event)">
+              </td>
+            </tr>
+            <tr>
+              <td>Profit</td>
+              <td>$ {{propertyService.propertyFlip.profit | number:'1.0-0'}}</td>
+            </tr>
+            <tr>
+              <td>Starting Bid</td>
+              <td>$ {{propertyService.propertyFlipData.startingBid | number:'1.0-0'}}</td>
+            </tr>
+            <tr>
+              <td>Max Bid</td>
+              <td>$ {{propertyService.propertyFlipData.maxBid | number:'1.0-0'}}</td>
+            </tr>
+            <tr>
+              <td style="color: white"><a class="button make-offer small flat clickable" (click)="saveFlipRevision()">{{saving ? 'Saving..' : saved ? 'Saved' : 'Save'}}</a></td>
+              <td></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <!-- Revisions -->
+    <div class="widget revisions" *ngIf="propertyService.propertyFlipRevisions.length > 0">
+        <ngb-accordion class="group">
+            <ngb-panel>
+                <template ngbPanelTitle>
+                    <header style="opacity: .5">
+                        <div class="label">
+                            <h2>Calculator Revisions</h2>
+                        </div>
+                    </header>
+                </template>
+                <template ngbPanelContent>
+                    <article>
+                        <ol>
+                            <li *ngFor="let revision of propertyService.propertyFlipRevisions">
+                                <p class="revision-author">{{revision.author}}</p>
+                                <p class="revision-time">{{formatTime(revision.time)}}</p>
+                                <div class="revision-data">
+                                    <ul>
+                                        <li *ngFor="let rev of revision.revisions">{{propertyService.renderRevision(rev, 'flip')}}</li>
+                                    </ul>
+                                </div>
+                                <div class="actions">
+                                    <a (click)="revertRevision(revision)" class="button">Revert Changes</a>
+                                </div>
+                            </li>
+                        </ol>
+                    </article>
+                </template>
+            </ngb-panel>
+        </ngb-accordion>
+    </div>
+    <!-- /Revisions -->
+</div>

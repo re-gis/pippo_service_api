@@ -1,0 +1,4 @@
+<div id="page-title" *ngIf="tutorialService.showVideo && tutorialService.videoUrl">
+  <div *ngIf="tutorialService.videoTitle"><h2>{{tutorialService.videoTitle}}<small class="clickable" (click)="tutorialService.hide()">X</small></h2></div>
+  <iframe width="1024" height="576" [src]="tutorialService.sanitizedVideoUrl" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+</div>

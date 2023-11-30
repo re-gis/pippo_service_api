@@ -1,0 +1,392 @@
+<html>
+  <head>
+    <script src="https://bossanova.uk/jspreadsheet/v4/jexcel.js"></script>
+    <script src="https://jsuites.net/v4/jsuites.js"></script>
+    <link rel="stylesheet" href="https://bossanova.uk/jspreadsheet/v4/jexcel.css" type="text/css" />
+    <link rel="stylesheet" href="https://jsuites.net/v4/jsuites.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Material+Icons" />
+  </head>
+  <body style="text-align: center">
+    <div id="spreadsheet" style="font-family: sans-serif"></div>
+    <script>
+/*var spData = [
+    [false, 'Interior paint', '=PDNUM("livingSize")', 'sqft', 'Volume', '=UD(CONCATENATE(ET(E1),IF(EQ(PDNUM("levels",1),1),"","multi"),"InteriorPaint"),0)', '', '=SUM(F1,G1)*C1', '=IF(A1,H1,0)', '=OUT("total",SUM(I1:I16))'],
+    [false, 'Carpeted surfaces', '=ROUND(PDNUM("livingSize")/9,0)', 'sq. yds', 'Volume', '=UD(CONCATENATE(ET(E2),"CarpetedSurfaces"),0)', '', '=SUM(F2,G2)*C2', '=IF(A2,H2,0)', '=ROUND(J1/PDNUM("livingSize"),0)'],
+    [false, 'Hard surfaces', '=ROUND(PDNUM("livingSize")/2,0)', 'sqft', 'Volume', '=UD(CONCATENATE(ET(E3),"HardSurfaces"),0)', '', '=SUM(F3,G3)*C3', '=IF(A3,H3,0)'],
+    [false, 'Dishwasher', '1', 'piece(s)', 'Volume', '=UD(CONCATENATE(ET(E4),"Dishwasher"),0)', '', '=SUM(F4,G4)*C4', '=IF(A4,H4,0)'],
+    [false, 'Microwave', '1', 'piece(s)', 'Volume', '=UD(CONCATENATE(ET(E5),"Microwave"),0)', '', '=SUM(F5,G5)*C5', '=IF(A5,H5,0)'],
+    [false, 'Ovens', '1', 'piece(s)', 'Volume', '=UD(CONCATENATE(ET(E6),"Ovens"),0)', '', '=SUM(F6,G6)*C6', '=IF(A6,H6,0)'],
+    [false, 'Hot water heater', '1', 'piece(s)', 'Volume', '=UD(CONCATENATE(ET(E7),"HotWaterHeater"),0)', '', '=SUM(F7,G7)*C7', '=IF(A7,H7,0)'],
+
+    [false, 'Exterior paint', '=PDNUM("livingSize")', 'sqft', 'Volume', '=UD(CONCATENATE(ET(E8),IF(EQ(PDNUM("levels",1),1),"","multi"),"ExteriorPaint"),0)', '', '=SUM(F8,G8)*C8', '=IF(A8,H8,0)'],
+    [false, 'Landscaping', '=PDNUM("lotSizeInSQFT")', 'lot sqft', 'Volume', '=UD(CONCATENATE(ET(E9),"Landscaping"),0)', '', '=SUM(F9,G9)*C9', '=IF(A9,H9,0)'],
+    [false, 'Roof', '=ROUND(PDNUM("livingSize")/41,0)', 'piece(s)', 'Volume', '=UD(CONCATENATE(ET(E10),"Roof"),0)', '', '=SUM(F10,G10)*C10', '=IF(A10,H10,0)'],
+    [false, 'Foundation', '1', 'piece(s)', 'Volume', '=UD(CONCATENATE(ET(E11),"Foundation"),0)', '', '=SUM(F11,G11)*C11', '=IF(A11,H11,0)'],
+
+    [false, 'Heating & Air', '=PDNUM("livingSize")', 'sqft', 'Volume', '=UD(CONCATENATE(ET(E12),"HeatingAir"),0)', '', '=SUM(F12,G12)*C12', '=IF(A12,H12,0)'],
+    [false, 'Condensing Unit', '1', 'piece(s)', 'Volume', '=UD(CONCATENATE(ET(E13),"CondensingUnit"),0)', '', '=SUM(F13,G13)*C13', '=IF(A13,H13,0)'],
+    [false, 'Air Handler', '1', 'piece(s)', 'Volume', '=UD(CONCATENATE(ET(E14),"AirHandler"),0)', '', '=SUM(F14,G14)*C14', '=IF(A14,H14,0)'],
+    [false, 'Service Panel', '1', 'piece(s)', 'Volume', '=UD(CONCATENATE(ET(E15),"ServicePanel"),0)', '', '=SUM(F15,G15)*C15', '=IF(A15,H15,0)'],
+    [false, 'Plumbing', '1', 'piece(s)', 'Volume', '=UD(CONCATENATE(ET(E16),"Plumbing"),0)', '', '=SUM(F16,G16)*C16', '=IF(A16,H16,0)']
+];*/
+var spColumns = [
+  { type: 'checkbox', title: '✓', width: 40 },
+  { type: 'text', title: 'Repair Description', width: 300, style: 'text-align: left' },
+  { type: 'numeric', title: 'Source', width: 80, mask: '#,##', decimal: '.' },
+  { type: 'dropdown', title: 'Unit', width: 115, source: ["piece(s)", "sqft", "sq. yds", "lot sqft"] },
+  { type: 'dropdown', title: 'Class', width: 145, source: ["Custom", "Semi-Custom", "Volume", "Manual"] },
+  { type: 'numeric', title: 'Cost per unit', width: 125, mask: '$ #,##0.00', decimal: '.' },
+  { type: 'hidden', title: 'Labor per unit', width: 125, mask: '$ #,##0.00', decimal: '.' },
+  { type: 'numeric', title: 'Subtotal', width: 100, mask: '$ #,##0.00', decimal: '.' },
+  { type: 'hidden', title: 'Cost', width: 100, mask: '$ #,##0.00', decimal: '.' },
+  { type: 'numeric', title: 'Total', width: 100, mask: '$ #,##0.00', decimal: '.' }
+];
+var spFooter = [
+  ['', '', '', '', '', '', '']
+];
+var resetMap = {};
+
+var baseSpreadsheet = null;
+var liveSpreadsheet = null;
+
+var userData = null;
+var propertyData = null;
+var defaultData = null;
+var enumTable = null;
+
+var outputs = {};
+var sp = null;
+
+var UD = function (arg, def) {
+  if ("*" === arg) {
+    console.log(userData);
+    console.log(defaultData);
+  }
+
+  return !userData || !userData[arg] ? !defaultData || !defaultData[arg] ? def : defaultData[arg] : userData[arg];
+}
+var PD = function (arg, def) {
+  if ("*" === arg) {
+    console.log(propertyData);
+  }
+
+  return !propertyData || !propertyData[arg] ? def : propertyData[arg];
+};
+var PDNUM = function (arg, def) {
+  return Number(PD(arg, def || 0));
+};
+var PDSTR = function (arg, def) {
+  return String(PD(arg, def || ''));
+};
+var ET = function (arg) {
+  if ("*" === arg) {
+    console.log(enumTable);
+  }
+
+  return !enumTable || !enumTable[arg] ? arg : enumTable[arg];
+};
+var OUT = function (id, val) {
+  outputs[id] = val;
+  window.parent.spmOutput(id, val);
+  return val;
+};
+/*var COLSUM = function (table, col, tInset = 0, bInset = 0) {
+  let rows = table.getData(false).length;
+  for (let i = 0; i < rows; i++) {
+    console.log(table.getValueFromCoords(col, i));
+  }
+  return 0;
+};*/
+
+function create() {
+  if (sp) {
+    return;
+  }
+  console.log('create**', parseCsv(liveSpreadsheet));
+
+  sp = jspreadsheet(document.getElementById('spreadsheet'), {
+    data: parseCsv(liveSpreadsheet),
+    columns: spColumns,
+//    footers: spFooter,
+
+    columnSorting: false,
+    columnDrag: false,
+    rowDrag: false,
+
+/*    toolbar: [
+      {
+        type: 'i',
+        content: 'undo',
+        onclick: () => {
+          sp.undo();
+        }
+      },
+      {
+        type: 'i',
+        content: 'redo',
+        onclick: () => {
+          sp.redo();
+        }
+      },
+      {
+        type: 'i',
+        content: ''
+      },
+      {
+        type: 'i',
+        content: 'save',
+        onclick: () => {
+          window.parent.spmExport(exportCsv(false), exportCsv(true));
+        }
+      },
+      {
+        type: 'i',
+        content: ''
+      },
+      {
+        type: 'i',
+        content: 'playlist_add',
+        onclick: () => {
+          sp.insertRow(1, sp.getData(false).length, false);
+        }
+      }
+    ],*/
+
+/* TODO: abstract column/row insertion to be controlled by the spreadsheet */
+    onchange: doOnChange,
+    onbeforeinsertcolumn: () => false,
+    oninsertrow: inst => {
+      let row = sp.getData(false).length;
+
+      // Initialize the new row's data
+      sp.setValue("A" + row, true, true);
+      sp.setValue("C" + row, 1, true);
+      sp.setValue("D" + row, 'piece(s)', true);
+      sp.setValue("E" + row, 'Manual', true);
+      sp.setValue("F" + row, 0, true);
+      sp.setValue("G" + row, 0, true);
+      sp.setValue("H" + row, '=SUM(F' + row + ',G' + row + ')*C' + row, true);
+      sp.setValue("I" + row, '=IF(A' + row + ',H' + row + ',0)', true);
+
+      // Update the total calculation
+      sp.setValue("J1", '=OUT("total",SUM(I1:I' + row + '))', true);
+    },
+    oneditionstart: (table, cell, x, y) => {
+      if (x != 2 && x != 5) {
+        return;
+      }
+
+      let key = x + "," + y;
+      resetMap[key] = sp.getValueFromCoords(x, y);
+      sp.setValueFromCoords(x, y, "", true);
+    },
+    oneditionend: (table, cell, x, y, val) => {
+      let key = x + "," + y;
+
+      if (resetMap[key] == undefined) {
+        return;
+      }
+
+      if (!val) {
+        sp.setValueFromCoords(x, y, resetMap[key]);
+      }
+
+      delete resetMap[key];
+    }
+  });
+
+  sp.setData(null);
+
+  let data = sp.getData();
+
+  for (let j = 0; j < data.length; j++) {
+    // Calling doOnChange directly lets us avoid cascading calculations just to update the style
+    doOnChange(null, null, 0, j, sp.getValueFromCoords(0, j));
+  }
+}
+
+function doOnChange(table, cell, x, y, value) {
+  switch (Number(x)) {
+    case 0:
+      sp.setStyle('H' + String(Number(y) + 1), 'color', value ? '#000' : '#ccc');
+      sp.setStyle('H' + String(Number(y) + 1), 'text-decoration', value ? 'none' : 'line-through');
+      break;
+    case 3: {
+      switch (value) {
+        case "piece(s)":
+          sp.setValueFromCoords(x - 1, y, '1', false);
+          break;
+        case "sqft":
+          sp.setValueFromCoords(x - 1, y, '=PDNUM("livingSize")', false);
+          break;
+        case "sq. yds":
+          sp.setValueFromCoords(x - 1, y, '=ROUND(PDNUM("livingSize")/9,0)', false);
+          break;
+        case "lot sqft":
+          sp.setValueFromCoords(x - 1, y, '=PDNUM("lotSizeInSQFT")', false);
+          break;
+        default:
+          sp.setValueFromCoords(x - 1, y, '', false);
+          break;
+      }
+
+      break;
+    }
+    default:
+      return;
+  }
+}
+
+function submitInput(base, live, pd, ud, dd, et) {
+  baseSpreadsheet = base;
+  liveSpreadsheet = live;
+  propertyData = pd;
+  userData = ud;
+  defaultData = dd;
+  enumTable = et;
+
+  console.log({pd, ud, dd, et});
+  create();
+}
+
+function requestOutput(id) {
+  if (!id || "*" === id) {
+    return Object.assign({}, outputs);
+  }
+
+  return outputs[id];
+}
+
+function formatCell(colNum, rowNum){
+  let s = '', t;
+
+  while (colNum > 0) {
+    t = (colNum - 1) % 26;
+    s = String.fromCharCode(65 + t) + s;
+    colNum = (colNum - t) / 26 | 0;
+  }
+
+  return s + String(rowNum);
+}
+
+function parseCol(cell) {
+  let chars = String(cell).replaceAll(/[^A-Z]/g, '').split("").reverse();
+  let num = 0;
+  let m = 1;
+  const a = 'A'.charCodeAt(0);
+
+  for (let c of chars) {
+    num += (c - a + 1) * m;
+    m *= 26;
+  }
+
+  return num;
+}
+
+function exportCsv(exportFormulaValues) {
+  if (!sp) {
+    return null;
+  }
+
+  let b = exportFormulaValues ? '\n' + sp.getHeaders() : '';
+
+  return sp.getData(false).map((row, j) => row.map((cell, i) => {
+    let c = String(cell);
+
+    if (exportFormulaValues) {
+      // Scan for custom functions and copy by value in those cases
+      if (c.indexOf('UD(') >= 0 || c.indexOf('PD(') >= 0 || c.indexOf('PDNUM(') >= 0 || c.indexOf('PDSTR(') >= 0 || c.indexOf('OUT(') >= 0) {
+        c = String(sp.getLabel(formatCell(i + 1, j + 1)));
+      }
+    }
+
+    return c.indexOf('"') >= 0 || c.indexOf(',') >= 0 ? '"' + c.replace(/"/g, '""') + '"' : c;
+  }).join(',')).join('\n') + b;
+}
+
+function toolbarCall(k, v) {
+console.log('toolbarCall', k, v);
+  if (k) {
+    switch (k) {
+      case "setQualityClass":
+        if (v && sp) {
+          let rows = sp.getData(false).length;
+          v = String(v);
+
+          for (let j = 0; j < rows; j++) {
+            sp.setValueFromCoords(4, j, v, true);
+          }
+        }
+
+        break;
+      case "undo":
+        if (sp) sp.undo();
+
+        break;
+      case "redo":
+        if (sp) sp.redo();
+
+        break;
+      case "addRow":
+        if (sp) sp.insertRow(1, sp.getData(false).length, false);
+
+        break;
+      case "reset":
+        break;
+      case "save":
+        if (sp) window.parent.spmExport(exportCsv(false), exportCsv(true));
+
+        break;
+    }
+  }
+}
+
+function parseCsv(csv) {
+  let lines = csv.split('\n');
+
+  lines = lines.map(line => {
+    let split = line.split(/,(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)/g);
+
+    return split.map(cell => {
+      if (cell && cell.indexOf('"') >= 0) {
+        return cell.replace(/^"|"$/g, '').replaceAll('""', '"');
+      }
+
+      return cell;
+    });
+  });
+
+  return lines;
+}
+
+window.parent.spmLoaded(submitInput, requestOutput, exportCsv, toolbarCall);
+    </script>
+<!-- TODO Extract this to module definition -->
+    <style>
+.jexcel tbody td:nth-child(3) {
+  padding-top: .6rem;
+  padding-bottom: 0.6rem;
+  padding-left: 2rem;
+  height: 39px;
+  font-size: 120%;
+  text-align: left !important;
+  border-left: none;
+  border-right: none;
+  box-shadow: none !important;
+}
+.jexcel tbody td:nth-child(n+4):nth-child(-n+9) {
+  border-left: none;
+  border-right: none;
+  box-shadow: none !important;
+}
+.jexcel thead tr td:nth-child(3) {
+  padding-left: 2rem;
+  height: 39px;
+  text-align: left !important;
+}
+.jexcel tbody tr:nth-child(n+2) td:nth-child(11) {
+  background: #ccc;
+}
+    </style>
+  </body>
+</html>

@@ -1,0 +1,379 @@
+<!--template #notes let-c="close" let-d="dismiss">
+  <div class="modal-dialog">
+    <div class="modal-content widget">
+      <div class="modal-header">
+        <div class="modal-title">Notes</div>
+        <div class="actions">
+          <a (click)="d('close')" class="clickable close">Close</a>
+        </div>
+      </div>
+      <div class="modal-body">
+        <div class="notes-content">
+          <div *ngFor="let note of notesService.notes">
+            <span>{{note.author}}</span>
+            <span>{{formatDate(note.created, 'MMM D, YY@h:mm A')}}</span>
+            <div [innerHTML]="note.content"></div>
+            <div *ngFor="let attachment of note.filteredAttachments">
+              <a target="_blank" href="{{attachment.url}}">{{attachment.description}}</a>
+            </div>
+          </div>
+        </div>
+        <form #f="ngForm" (ngSubmit)="savePropertyNote()">
+          <fieldset>
+            <div class="group">
+              <label for="notes">Notes about this property</label>
+              <p-editor class="paper-nested2" name="newnote" [(ngModel)]="notesService.newnote" [style]="{'height':'160px'}"></p-editor>
+              <p class="description">Write down your notes about this property. <strong>These notes will be visible only to you.</strong></p>
+            </div>
+          </fieldset>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <a (click)="savePropertyNote(); c('close')" class="clickable button">Save notes</a>
+      </div>
+    </div>
+  </div>
+</template-->
+<!-- Property Basic Information -->
+<div id="property-information" style="height: 600px; padding: 0">
+  <div class="container splash-calculator" style="width: 100%; height: 100%">
+    <div class="content" style="width: 50%; display: inline-block">
+    <div class="widget calculator" style="margin-bottom: 0px">
+        <article style="margin-bottom: 0">
+            <div class="group slider">
+                <header>
+                    <div class="label">
+                        <h3>ARV</h3>
+                    </div>
+                    <div class="slider" style="width: 60%">
+                        <div class="handle"
+                            slideAble
+                            slideDirection="horisontal"
+                            (onSliding)="changeMarketPct($event)"
+                            (onStopSliding)="finishMarketPct($event)"
+                            [ngStyle]="{'left': '50%'}">
+                            <span>ARV {{scrubCalc.marketPctFormatted}}</span>
+                        </div>
+                    </div>
+                    <div class="value" style="white-space: nowrap; padding-right: 8rem">
+                        <span class="currency">$</span>
+                        <span class="value">{{scrubCalc.initialMarket | number : '1.0-0'}}</span>
+                    </div>
+                </header>
+            </div>
+        </article>
+        <article>
+            <div class="group">
+            <accordion class="group values-two-column">
+                <accordion-group class="accordion">
+                    <accordion-heading class="accordion-header calc-gray-gradient">
+                        <header>
+                            <div class="label">
+                                <h3 style="white-space: nowrap">Quick Equity Calculator</h3>
+                            </div>
+                        </header>
+                    </accordion-heading>
+                    <div class="subsection-wrap">
+                        <div class="subsection-content subsection-a">
+                            <div class="group values-two-column">
+                                <header>
+                                    <div class="values" style="float: none; width: 100%;">
+                                        <div class="value editable value-wrap" style="padding: 0.6875rem 1.875rem">
+                                            <span class="currency dropdown-label">% of ARV</span>
+                                            <span class="input-value" style="width: 60%">
+                                                <select class="input-field" [ngModel]="scrubCalc.calcPct" (ngModelChange)="scrubCalc.calcPct = $event; recalcGuess(true)">
+                                                    <option value="65">65%</option>
+                                                    <option value="70">70%</option>
+                                                    <option value="75">75%</option>
+                                                    <option value="80">80%</option>
+                                                    <option value="85">85%</option>
+                                                    <option value="90">90%</option>
+                                                </select>
+                                            </span>
+                                        </div>
+                                        <div class="value value-wrap" style="text-align: center; margin: auto; padding-left: 0; padding-right: 0">
+                                            <span class="currency">$</span>
+                                            <span class="value">{{scrubCalc.guessMarket | number : '1.0-0'}}</span>
+                                        </div>
+                                    </div>
+                                </header>
+                            </div>
+                            <div class="group values-two-column">
+                                <header>
+                                    <div class="values" style="float: none; width: 100%;">
+                                        <div class="value editable value-wrap" style="padding: 0.6875rem 1.875rem">
+                                            <span class="currency dropdown-label">Remodel</span>
+                                            <span class="input-value" style="width: 60%">
+                                                <select class="input-field" [ngModel]="scrubCalc.cosmeticsSqft" (ngModelChange)="presetCosmetics($event)">
+                                                    <option value="10">10 / sqft</option>
+                                                    <option value="15">15 / sqft</option>
+                                                    <option value="20">20 / sqft</option>
+                                                    <option value="25">25 / sqft</option>
+                                                    <option value="30">30 / sqft</option>
+                                                    <option value="0">Custom</option>
+                                                </select>
+                                            </span>
+                                        </div>
+                                        <div class="value editable value-wrap">
+                                            <span class="currency">$</span>
+                                            <span class="input-value">
+                                                <input class="input-field" type="number" step="100" min="0"
+                                                    [ngModel]="scrubCalc.cosmeticsCust"
+                                                    (ngModelChange)="manualCosmetics($event)" />
+                                            </span>
+                                        </div>
+                                    </div>
+                                </header>
+                            </div>
+                            <div class="group values-two-column">
+                                <header>
+                                    <div class="label">
+                                        <h3>Roof</h3>
+                                    </div>
+                                    <div class="values" style="float: none; width: 100%;">
+                                        <div class="value editable value-wrap">
+                                            <span class="currency">$</span>
+                                            <span class="input-value">
+                                                <input class="input-field" type="number" step="1" min="0"
+                                                    [ngModel]="scrubCalc.roofCust"
+                                                    (ngModelChange)="scrubCalc.roofCust = $event; recalcGuess(true)" />
+                                            </span>
+                                        </div>
+                                    </div>
+                                </header>
+                            </div>
+                            <div class="group values-two-column">
+                                <header>
+                                    <div class="label">
+                                        <h3>HVAC</h3>
+                                    </div>
+                                    <div class="values" style="float: none; width: 100%;">
+                                        <div class="value editable value-wrap">
+                                            <span class="currency">$</span>
+                                            <span class="input-value">
+                                                <input class="input-field" type="number" step="1" min="0"
+                                                    [ngModel]="scrubCalc.hvacCust"
+                                                    (ngModelChange)="scrubCalc.hvacCust = $event; recalcGuess(true)" />
+                                            </span>
+                                        </div>
+                                    </div>
+                                </header>
+                            </div>
+                            <div class="group values-two-column">
+                                <header>
+                                    <div class="label">
+                                        <h3>Foundation</h3>
+                                    </div>
+                                    <div class="values" style="float: none; width: 100%;">
+                                        <div class="value editable value-wrap">
+                                            <span class="currency">$</span>
+                                            <span class="input-value">
+                                                <input class="input-field" type="number" step="1" min="0"
+                                                    [ngModel]="scrubCalc.foundationCust"
+                                                    (ngModelChange)="scrubCalc.foundationCust = $event; recalcGuess(true)" />
+                                            </span>
+                                        </div>
+                                    </div>
+                                </header>
+                            </div>
+                            <div class="group values-two-column">
+                                <header>
+                                    <div class="label">
+                                        <h3>Other Costs</h3>
+                                    </div>
+                                    <div class="values" style="float: none; width: 100%;">
+                                        <div class="value editable value-wrap">
+                                            <span class="currency">$</span>
+                                            <span class="input-value">
+                                                <input class="input-field" type="number" step="1" min="0"
+                                                    [ngModel]="scrubCalc.otherCust"
+                                                    (ngModelChange)="scrubCalc.otherCust = $event; recalcGuess(true)" />
+                                            </span>
+                                        </div>
+                                    </div>
+                                </header>
+                            </div>
+                            <div class="group values-two-column">
+                                <header>
+                                    <div class="label">
+                                        <h3>We're looking at..</h3>
+                                    </div>
+                                    <div class="values" style="float: none; width: 100%;">
+                                        <div class="value value-wrap" style="text-align: center; margin: auto; padding-left: 0; padding-right: 0">
+                                            <span class="currency">$</span>
+                                            <span class="value">{{scrubCalc.guessBid | number : '1.0-0'}}</span>
+                                        </div>
+                                    </div>
+                                </header>
+                            </div>
+                            <div class="group values-two-column">
+                                <header>
+                                    <div class="label">&nbsp;</div>
+                                    <div class="values" style="float: none; width: 100%;">
+                                        <div class="value value-wrap">
+                                            <button class="q-selector-btn" type="button" (click)="saveQuickEquity()">{{saving ? 'Saving..' : (scrubCalcDirty ? 'Save to HIT' : 'Saved')}}</button>
+                                        </div>
+                                    </div>
+                                </header>
+                            </div>
+                        </div>
+                    </div>
+                </accordion-group>
+            </accordion>
+            </div>
+        </article>
+    </div>
+    </div>
+    <app-google-streetview
+        [active]="true"
+        [property]="{latitude: propertyService.getCurrentProperty().location?.latitude, longitude: propertyService.getCurrentProperty().location?.longitude, noControls: false}"
+        (onFail)="onStreetviewFailed($event)"
+        *ngIf="!mapActive"></app-google-streetview>
+    <app-google-map
+        [fitBounds]="true" [active]="propertyService.getCurrentProperty().location?.latitude && propertyService.getCurrentProperty().location?.longitude"
+        [property]="propertyService.property"
+        *ngIf="mapActive"></app-google-map>
+  </div>
+</div>
+<!-- /Property Basic Information -->
+<!--div style="position: relative;">
+  <div class="body-overlay" [hidden]="!showGallerySlider">
+    <div class="actions-wrapper">
+      <div class="actions">
+        <div class="gallery-tabs tab-selector-inline"
+            (click)="$event.stopPropagation(); $event.preventDefault()">
+        </div>
+        <a (click)="showGallerySlider = false" class="clickable close">Close</a>
+      </div>
+    </div>
+    <div class="tab" [ngClass]="{'is-active': galleryTab == 'tab-gallery'}">
+      <div id="ninjaSliderModal" class="ninja-slider general-modal"
+        *ngIf="propertyService.getCurrentProperty().resources?.photos?.urls && (propertyService.getCurrentProperty().resources?.photos?.urls.length > 0)">
+        <div>
+          <div class="slider-inner">
+            <ul>
+              <li *ngFor="let photo of propertyService.getCurrentProperty().resources?.photos?.highResUrls">
+                <a class="ns-img" href="{{photo}}"></a>
+              </li>
+            </ul>
+            <div class="fs-icon" title="Expand/Close"></div>
+          </div>
+          <div id="thumbSliderModal" class="thumbnail-slider">
+            <div class="inner">
+              <ul>
+                <li *ngFor="let photo of propertyService.getCurrentProperty().resources?.photos?.urls">
+                  <a class="thumb" href="{{photo}}"></a>
+                  <span>&nbsp;</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div-->
+<!-- Main -->
+<!--flo-scroller>
+  <ul>
+    <li><a class="button secondary small clickable" (click)="showNotesModal($event, notes)">Notes</a></li>
+    <li>
+      <a class="button white small clickable" (click)="toggleWatchlistSearchListing()">
+        <span *ngIf="!searchService.inWatchlist(propertyService.getCurrentProperty().identifier?.bippoId)">Add to watchlist</span>
+        <span *ngIf="searchService.inWatchlist(propertyService.getCurrentProperty().identifier?.bippoId)">Remove from watchlist</span></a>
+    </li>
+    <li><a class="button make-offer small flat clickable" (click)="makeOffer()">Make an offer</a></li>
+    <li><a class="button secondary small clickable" (click)="backToSearch()">Back to Search</a></li>
+  </ul>
+</flo-scroller-->
+<div id="main" class="section-main">
+  <div class="container">
+    <!-- Main content -->
+    <div class="main-content" role="main">
+      <div class="container" style="padding-bottom: 16px; margin-left: 0; width: 68%; display: inline-block">
+        <ol class="pilltags featured" style="width: 100%">
+          <li><strong>{{propertyService.getCurrentProperty().building?.rooms?.beds}}</strong> beds</li>
+          <li *ngIf="propertyService.getCurrentProperty().building?.rooms?.bathsFull">
+            <strong>{{propertyService.getCurrentProperty().building?.rooms?.bathsFull}}</strong>
+            <strong *ngIf="propertyService.getCurrentProperty().building?.rooms?.bathsHalf && propertyService.getCurrentProperty().building?.rooms?.bathsHalf > 0">
+              {{propertyService.getCurrentProperty().building?.rooms?.bathsHalf}}/2
+            </strong>
+            baths
+          </li>
+          <li *ngIf="!propertyService.getCurrentProperty().building?.rooms?.bathsFull">
+            <strong>{{propertyService.getCurrentProperty().building?.rooms?.bathsTotal}}</strong> baths
+          </li>
+          <li><strong>{{propertyService.getCurrentProperty().building?.size?.livingSize | number : '1.0-0'}}</strong> sqft GLA</li>
+          <li *ngIf="propertyService.getCurrentProperty().lot?.lotSizeInSQFT">
+            <strong>{{propertyService.getCurrentProperty().lot?.lotSizeInSQFT | number : '1.0-0'}}</strong> sqft LOT
+          </li>
+          <li class="more-info" *ngIf="propertyService.getCurrentProperty().assessment?.assessed?.assdTtlValue">
+            Tax: <strong>{{propertyService.getCurrentProperty().assessment?.assessed?.assdTtlValue | currency:'USD':true:'1.0-0'}}</strong>
+            <div>
+              <p>{{propertyService.getPropertyTaxDescription()}}: {{propertyService.getTaxAmt() | currency:'USD':true:'1.0-0'}}</p>
+            </div>
+          </li>
+        </ol>
+        <h2 style="display: inline; border-left: 1px solid rgb(254, 207, 64); padding-left: 0.83333rem">{{propertyService.getCurrentProperty().address?.line1}}</h2>
+        <h5 style="display: inline; padding-left: 0.33333rem"> {{propertyService.getCurrentProperty().address?.line2}}</h5>
+      </div>
+      <div style="width: 16%; display: inline; float: right" *ngIf="!streetFailed">
+        <button type="button" style="float: right" (click)="toggleMapStreet()">Toggle {{mapActive ? 'Street' : 'Map'}}</button>
+      </div>
+      <div style="width: 15%; display: inline; float: right" *ngIf="lastBippoId">
+        <button type="button" style="float: right" (click)="navigateToProperty()">Go To Details</button>
+      </div>
+      <div style="width: 100%; border-bottom: 1px solid #bbb"></div>
+      <div class="container" style="padding: 0; margin-top: 30px; width: 49%; display: inline-block; vertical-align: top">
+        <ngb-accordion class="accordion-styled" [closeOthers]="false">
+          <article class="accordion is-open" ngbPanel>
+            <template ngbPanelTitle>
+              <header>
+                <h2>Analytics</h2>
+                <a class="action-button" href=""></a>
+              </header>
+            </template>
+            <template ngbPanelContent>
+              <app-property-analytics [property]="propertyService.property"></app-property-analytics>
+            </template>
+          </article>
+        </ngb-accordion>
+      </div>
+      <div class="container" style="padding: 0; margin-top: 30px; width: 49%; display: inline-block; vertical-align: top">
+        <ngb-accordion class="accordion-styled" [closeOthers]="false">
+          <article class="accordion is-open" ngbPanel>
+            <template ngbPanelTitle>
+              <header>
+                <h2>Census</h2>
+                <a class="action-button" href=""></a>
+              </header>
+            </template>
+            <template ngbPanelContent>
+              <app-property-census [property]="propertyService.property"></app-property-census>
+            </template>
+          </article>
+        </ngb-accordion>
+      </div>
+      <div class="property-courtesy-of" *ngIf="propertyService.getCurrentProperty().mls?.brokerage">
+        <p>Courtesy of {{propertyService.getCurrentProperty().mls?.brokerage?.listOfficeName}}, {{propertyService.getCurrentProperty().mls?.brokerage?.listAgentFullName}}</p>
+      </div>
+    </div>
+    <!-- /Main content -->
+  </div>
+</div>
+<!-- /Main -->
+<div class="floating-information">
+  <div class="container">
+    <header>
+      <p>Current property: <strong>{{propertyService.getCurrentProperty().address?.line1}}</strong>, {{propertyService.getCurrentProperty().address?.line2}}</p>
+      <p>List price: <strong>${{propertyService.getListPrice()}}</strong></p>
+    </header>
+    <div class="actions">
+      <a class="button secondary small clickable" (click)="navigateToProperty()" *ngIf="lastBippoId">Go to property details</a>
+      <a class="button white small clickable" (click)="toggleWatchlistSearchListing()">
+        <span *ngIf="!searchService.inWatchlist(propertyService.getCurrentProperty().identifier?.bippoId)">Add to watchlist</span>
+        <span *ngIf="searchService.inWatchlist(propertyService.getCurrentProperty().identifier?.bippoId)">Remove from watchlist</span></a>
+      <!--a class="button make-offer small flat clickable" (click)="makeOffer()">Make an offer</a-->
+    </div>
+  </div>
+</div>

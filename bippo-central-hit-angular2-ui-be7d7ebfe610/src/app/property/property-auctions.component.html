@@ -1,0 +1,367 @@
+<div class="tabswrapper">
+  <ul class="infotabs general">
+    <li class="tab" data-pane-id="pane1" *ngIf="rawAuctionData">Auction Overview</li>
+    <li class="tab" data-pane-id="pane1" *ngIf="rawAuctionData">Lender / Servicer</li>
+    <li class="tab" data-pane-id="pane1" *ngIf="rawAuctionData">Property Info</li>
+    <!--li class="tab" data-pane-id="pane1" *ngIf="rawAuctionData">Raw Data</li-->
+    <li class="tab" data-pane-id="pane2" *ngIf="!rawAuctionData">Info & Documents</li>
+    <li class="tab" data-pane-id="pane3" *ngIf="!rawAuctionData">Liens</li>
+    <li class="tab" data-pane-id="pane4" *ngIf="!rawAuctionData">Taxes</li>
+    <li class="tab" data-pane-id="pane5" *ngIf="!rawAuctionData">O&E Report</li>
+  </ul>
+  <div class="panes">
+    <div class="inner_panes">
+      <div class="pane" *ngIf="rawAuctionData">
+        <div class="inner_pane">
+          <div class="tabcontent auction-tab">
+            <p class="address">
+              <span>{{getProperty().address?.line1}}, {{getProperty().address?.line2}}</span>
+              <span style="float: right">{{getProperty().auction?.auctionDate + 43200000 | date:'MMMM d, yyyy':'UTC'}} Auction</span>
+            </p>
+            <div class="widget table striped narrow full-width" style="max-width: 710px" *ngIf="rawAuctionData">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Auction Field</th>
+                    <th>Value</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Recorded Auction Date</td>
+                    <td>{{getProperty().auction.rawData?.RecordedAuctionDate}}</td>
+                  </tr>
+                  <tr>
+                    <td>Recorded Opening Bid</td>
+                    <td>{{getProperty().auction.rawData?.RecordedOpeningBid}}</td>
+                  </tr>
+                  <tr>
+                    <td>Default Amount</td>
+                    <td>{{getProperty().auction.rawData?.DefaultAmount}}</td>
+                  </tr>
+                  <tr>
+                    <td>Original Loan Amount</td>
+                    <td>{{getProperty().auction.rawData?.OriginalLoanAmount}}</td>
+                  </tr>
+                  <tr>
+                    <td>Loan Balance</td>
+                    <td>{{getProperty().auction.rawData?.LoanBalance}}</td>
+                  </tr>
+                  <tr>
+                    <td>Owner's Name</td>
+                    <td>{{getProperty().auction.rawData?.BorrowersName_Owner}}</td>
+                  </tr>
+                  <tr>
+                    <td>Owner's Tax Bill Address</td>
+                    <td>{{getProperty().auction.rawData?.Tax_Bill_MailingAddress}}, {{getProperty().auction.rawData?.Tax_Bill_MailingCity}}, {{getProperty().auction.rawData?.Tax_Bill_MailingState}} {{getProperty().auction.rawData?.Tax_Bill_MailingZip}}</td>
+                  <tr>
+                  <tr>
+                    <td>Judgement Date</td>
+                    <td>{{getProperty().auction.rawData?.JudgementDate}}</td>
+                  </tr>
+                  <tr>
+                    <td>Judgment Amount</td>
+                    <td>{{getProperty().auction.rawData?.JudgmentAmount}}</td>
+                  </tr>
+                  <tr>
+                    <td>Auction Address</td>
+                    <td>{{getProperty().auction.rawData?.AuctionAddress}}</td>
+                  </tr>
+                  <tr>
+                    <td>Auction City/State</td>
+                    <td>{{getProperty().auction.rawData?.AuctionCityState}}</td>
+                  </tr>
+                  <tr>
+                    <td>Doc. Inst. Number</td>
+                    <td>{{getProperty().auction.rawData?.RelatedDocumentInstrumentNumber}}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="pane" *ngIf="rawAuctionData">
+        <div class="inner_pane">
+          <div class="tabcontent auction-tab">
+            <p class="address">
+              <span>{{getProperty().address?.line1}}, {{getProperty().address?.line2}}</span>
+              <span style="float: right">{{getProperty().auction?.auctionDate + 43200000 | date:'MMMM d, yyyy':'UTC'}} Auction</span>
+            </p>
+            <div class="widget table striped narrow full-width" style="max-width: 710px" *ngIf="rawAuctionData">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Auction Field</th>
+                    <th>Value</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Lender Name</td>
+                    <td>{{getProperty().auction.rawData?.LenderName}}</td>
+                  </tr>
+                  <tr>
+                    <td>Lender Address</td>
+                    <td>{{getProperty().auction.rawData?.LenderAddress}}, {{getProperty().auction.rawData?.LenderCity}}, {{getProperty().auction.rawData?.LenderState}} {{getProperty().auction.rawData?.LenderZip}}</td>
+                  </tr>
+                  <tr>
+                    <td>Lender Phone</td>
+                    <td>{{getProperty().auction.rawData?.LenderPhone}}</td>
+                  </tr>
+                  <tr>
+                    <td>Servicer Name</td>
+                    <td>{{getProperty().auction.rawData?.ServicerName}}</td>
+                  </tr>
+                  <tr>
+                    <td>Servicer Address</td>
+                    <td>{{getProperty().auction.rawData?.ServicerAddress}}, {{getProperty().auction.rawData?.ServicerCity}}, {{getProperty().auction.rawData?.ServicerState}} {{getProperty().auction.rawData?.ServicerZip}}</td>
+                  </tr>
+                  <tr>
+                    <td>Servicer Phone</td>
+                    <td>{{getProperty().auction.rawData?.ServicerPhone}}</td>
+                  </tr>
+                  <tr>
+                    <td>Trustee Name</td>
+                    <td>{{getProperty().auction.rawData?.TrusteeName}}</td>
+                  </tr>
+                  <tr>
+                    <td>TrusteeAddress</td>
+                    <td>{{getProperty().auction.rawData?.TrusteeAddress}}, {{getProperty().auction.rawData?.TrusteeCity}}, {{getProperty().auction.rawData?.TrusteeState}} {{getProperty().auction.rawData?.TrusteeZip}}</td>
+                  </tr>
+                  <tr>
+                    <td>Trustee Phone</td>
+                    <td>{{getProperty().auction.rawData?.TrusteePhone}}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="pane" *ngIf="rawAuctionData">
+        <div class="inner_pane">
+          <div class="tabcontent auction-tab">
+            <p class="address">
+              <span>{{getProperty().address?.line1}}, {{getProperty().address?.line2}}</span>
+              <span style="float: right">{{getProperty().auction?.auctionDate + 43200000 | date:'MMMM d, yyyy':'UTC'}} Auction</span>
+            </p>
+            <div class="widget table striped narrow full-width" style="max-width: 710px" *ngIf="rawAuctionData">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Auction Field</th>
+                    <th>Value</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Address</td>
+                    <td>{{getProperty().auction.rawData?.SitusAddress}}, {{getProperty().auction.rawData?.SitusCity}}, {{getProperty().auction.rawData?.SitusState}} {{getProperty().auction.rawData?.SitusZip}}</td>
+                  <tr>
+                  <tr>
+                    <td>County</td>
+                    <td>{{getProperty().auction.rawData?.SitusCounty}}</td>
+                  <tr>
+                  <tr>
+                    <td>Lat/Long</td>
+                    <td>{{getProperty().auction.rawData?.Latitude}}, {{getProperty().auction.rawData?.Longitude}}</td>
+                  <tr>
+                  <tr>
+                    <td>APN</td>
+                    <td>{{getProperty().auction.rawData?.APN}}</td>
+                  <tr>
+                  <tr>
+                    <td>Property Type</td>
+                    <td>{{getProperty().auction.rawData?.PropertyGroup}}, {{getProperty().auction.rawData?.PropertyType}}</td>
+                  <tr>
+                  <tr>
+                    <td>Bedrooms</td>
+                    <td>{{getProperty().auction.rawData?.Bedrooms}}</td>
+                  <tr>
+                  <tr>
+                    <td>Bathrooms</td>
+                    <td>{{getProperty().auction.rawData?.Bathrooms}}</td>
+                  <tr>
+                  <tr>
+                    <td>GLA</td>
+                    <td>{{getProperty().auction.rawData?.SquareFootage}}</td>
+                  <tr>
+                  <tr>
+                    <td>Lot Size</td>
+                    <td>{{getProperty().auction.rawData?.LotSize}}</td>
+                  <tr>
+                  <tr>
+                    <td>Year Built</td>
+                    <td>{{getProperty().auction.rawData?.YearBuilt}}</td>
+                  <tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!--div class="pane" *ngIf="rawAuctionData">
+        <div class="inner_pane">
+          <div class="tabcontent auction-tab">
+            <p class="address">
+              <span>Raw Auction Data for {{getProperty().address?.line1}}</span>
+              <span style="float: right">{{getProperty().auction?.auctionDate + 43200000 | date:'MMMM d, yyyy':'UTC'}} Auction</span>
+            </p>
+            <div class="widget table striped narrow full-width" style="max-width: 710px" *ngIf="rawAuctionData">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Data Field</th>
+                    <th>Data Value</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <template ngFor let-entry [ngForOf]="rawAuctionData">
+                    <tr>
+                      <td>{{entry.dataKey}}</td>
+                      <td>{{entry.dataValue}}</td>
+                    <tr>
+                  </template>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div-->
+      <div class="pane" *ngIf="!rawAuctionData">
+        <div class="inner_pane">
+          <div class="tabcontent auction-tab">
+            <p class="address">
+              <span>{{getProperty().address?.line1}}</span>
+              <span style="float: right">{{getProperty().auction?.auctionDate + 43200000 | date:'MMMM d, yyyy':'UTC'}} Auction</span>
+            </p>
+            <h4 style="margin-bottom: 0px">Legal</h4>
+            <p>{{getProperty().auction?.legal}}</p>
+            <div>
+              <div class="leftside">
+                <div class="title">County</div>
+                <div class="value">{{getProperty().area?.countrysecsubd}}</div>
+                <div class="title">APN</div>
+                <div class="value">{{getProperty().identifier?.apn}}</div>
+                <div class="title">Grantee</div>
+                <div class="value">{{getProperty().auction?.grantee}}</div>
+                <div class="title">Trustee</div>
+                <div class="value">{{getProperty().auction?.trustee}}</div>
+              </div>
+              <div class="rightside">
+                <div class="title">Search</div>
+                <div class="value">{{getProperty().auction?.searchDate + 43200000 | date:'MMMM d, yyyy':'UTC'}}</div>
+                <div class="title">Effective</div>
+                <div class="value">{{getProperty().auction?.effectiveDate + 43200000 | date:'MMMM d, yyyy':'UTC'}}</div>
+                <div class="title">Auction</div>
+                <div class="value">{{getProperty().auction?.auctionDate + 43200000 | date:'MMMM d, yyyy':'UTC'}}</div>
+                <div class="title">Notice</div>
+                <div class="value">{{getProperty().auction?.noticeDate + 43200000 | date:'MMMM d, yyyy':'UTC'}}</div>
+              </div>
+            </div>
+            <div>
+              <div class="leftside" style="padding-bottom: 15px;float: left; text-align: center" *ngIf="getProperty().auction?.postingUrl">
+                <a href="{{getProperty().auction?.postingUrl | placeholder:'#'}}" target="_blank">
+                  <button class="auction-doc-btn" type="button">Foreclosure Posting</button>
+                </a>
+              </div>
+              <div class="rightside" style="padding-bottom: 15px;float: left; text-align: center" *ngIf="getProperty().auction?.noticeUrl">
+                <a href="{{getProperty().auction?.noticeUrl | placeholder:'#'}}" target="_blank">
+                  <button class="auction-doc-btn" type="button">Notice to Trustee</button>
+                </a>
+              </div>
+              <!--div class="three-cols" style="float: left; text-align: center">
+                <a class="button" href="#">
+                  <button type="button" disabled>O&E Report</button>
+                </a>
+              </div-->
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="pane" *ngIf="!rawAuctionData">
+        <div class="inner_pane">
+          <div class="tabcontent auction-tab">
+            <!--h2>Other Information</h2-->
+            <p class="address">
+              <span>{{getProperty().address?.line1}}</span>
+              <span style="float: right">{{getProperty().auction?.auctionDate + 43200000 | date:'MMMM d, yyyy':'UTC'}} Auction</span>
+            </p>
+            <h4>Encumbrances</h4>
+            <div class="title five-cols">Routed As</div>
+            <div class="title five-cols">Type of Doc</div>
+            <div class="title five-cols">Recorded Date</div>
+            <div class="title five-cols">Bk/Pg/Institu#</div>
+            <div class="title five-cols">Comments</div>
+            <div *ngFor="let lien of getProperty().auction?.encumbrances">
+              <div class="value five-cols" style="float: left">{{lien.routedAs}}</div>
+              <div class="value five-cols" style="float: left">{{lien.docType}}</div>
+              <div class="value five-cols" style="float: left">{{lien.recDate}}</div>
+              <div class="value five-cols" style="float: left">{{lien.bkPgIn}}</div>
+              <div class="value five-cols" style="float: left">{{lien.comment}}</div>
+            </div>
+            <h4 style="margin-top: 10px">Involuntaries</h4>
+            <div class="title five-cols">Routed As</div>
+            <div class="title five-cols">Type of Doc</div>
+            <div class="title five-cols">Recorded Date</div>
+            <div class="title five-cols">Bk/Pg/Institu#</div>
+            <div class="title five-cols">Case#</div>
+            <div *ngFor="let lien of getProperty().auction?.involuntaries">
+              <div class="value five-cols" style="float: left">{{lien.routedAs}}</div>
+              <div class="value five-cols" style="float: left">{{lien.docType}}</div>
+              <div class="value five-cols" style="float: left">{{lien.recDate}}</div>
+              <div class="value five-cols" style="float: left">{{lien.bkPgIn}}</div>
+              <div class="value five-cols" style="float: left">{{lien.comment}}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="pane" *ngIf="!rawAuctionData">
+        <div class="inner_pane">
+          <div class="tabcontent auction-tab">
+            <p class="address">
+              <span>{{getProperty().address?.line1}}</span>
+              <span style="float: right">{{getProperty().auction?.auctionDate + 43200000 | date:'MMMM d, yyyy':'UTC'}} Auction</span>
+            </p>
+            <div>
+              <div class="leftside">
+                <div class="title">County</div>
+                <div class="value">{{getProperty().area?.countrysecsubd}}</div>
+                <div class="title">APN</div>
+                <div class="value">{{getProperty().identifier?.apn}}</div>
+              </div>
+              <div class="rightside">
+                <div class="title">Land Value</div>
+                <div class="value">{{getProperty().auction?.land | currency:'USD':true:'1.0-0'}}</div>
+                <div class="title">Improved Value</div>
+                <div class="value">{{getProperty().auction?.impr | currency:'USD':true:'1.0-0'}}</div>
+                <div class="title">Total Value</div>
+                <div class="value">{{getProperty().auction?.total | currency:'USD':true:'1.0-0'}}</div>
+              </div>
+            </div>
+            <div style="margin-top: 140px">
+              <div class="value four-cols" style="float: left">Current Tax</div>
+              <div class="value four-cols" style="float: left">{{getProperty().auction?.currentAmt | currency:'USD':true:'1.0-0'}}</div>
+              <div class="value four-cols" style="float: left">{{getProperty().auction?.currentStatus}}</div>
+              <div class="value four-cols" style="float: left">{{getProperty().auction?.currentDue}}</div>
+            </div>
+            <div *ngFor="let delinq of getProperty().auction?.delinquencies">
+              <div class="value four-cols" style="float: left">{{delinq.taxYear}}</div>
+              <div class="value four-cols" style="float: left">{{delinq.delinquent | currency:'USD':true:'1.0-0'}}</div>
+              <div class="value four-cols" style="float: left">{{delinq.status}}</div>
+              <div class="value four-cols" style="float: left">{{delinq.through}}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="pane" *ngIf="!rawAuctionData">
+        <div class="inner_pane">
+          <div class="tabcontent auction-tab">
+            <p class="address"><span>Coming Soon</span></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

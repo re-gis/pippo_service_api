@@ -1,0 +1,275 @@
+<!-- Main -->
+<div id="main" class="section-main">
+  <div class="container">
+    <!-- Main content -->
+    <div class="main-content" role="main">
+      <div class="widget login subscribe">
+        <header>
+          <h2>Subscribe to HIT</h2>
+          <div class="site-branding">
+            <div class="site-logo">
+              <a title="HomeInvestorTool.com">HomeInvestorTool.com</a>
+            </div>
+          </div>
+        </header>
+        <div class="form" *ngIf="claimedToSubscribe">
+          <div class="group message" style="margin-bottom: 3rem">
+            <p style="text-align: left">
+              Thank you for your interest in HIT! Once you have completed your payment information on our payment processor's website, your subscription should be enabled in less than a minute.<br><br>
+              When you have done so, please click the button below to head back to the sign-in page and get started with HIT!
+            </p>
+          </div>
+          <form #f="ngForm" (ngSubmit)="logout()">
+            <fieldset>
+              <div class="group button-group">
+                <input type="submit" class="button large" value="Sign-In">
+              </div>
+            </fieldset>
+          </form>
+        </div>
+        <div class="form" *ngIf="hostedPage && !claimedToSubscribe">
+          <div class="group message" style="margin-bottom: 3rem">
+            <p style="text-align: left">
+              Your subscription is ready, you will now be redirected to our payment processor's website to complete your payment information.<br><br>
+            </p>
+            <p style="text-align: center"><a href="{{hostedPage}}" target="_blank" style="color: #dc4128; font-size: 150%">Not opening automatically? Click here</a><br><br></p>
+            <p style="text-align: left">
+              When that's complete, please click the Continue button below for the last few steps before get you started with HIT.
+            </p>
+          </div>
+          <form #f="ngForm" (ngSubmit)="claimSubscribe()">
+            <fieldset>
+              <div class="group button-group">
+                <input type="submit" class="button large" value="Continue">
+              </div>
+            </fieldset>
+          </form>
+        </div>
+        <div class="form" *ngIf="requestingPage && !hostedPage">
+          <div class="group message">
+            <p style="text-align: left">
+              Please wait a moment while we set things up with our payment processor..
+            </p>
+          </div>
+        </div>
+        <div class="form" *ngIf="needsCustomer && !submittedCustomer">
+          <div class="group message">
+            <p style="text-align: left">
+              Thank you for agreeing to try the Home Investor Tool!<br><br>
+              In order to initiate the <b>7 day free</b> trial we need to finish your profile with a working credit card. Our payment processor will verify the card, but not charge you until the end of your trial. We want your business but we want you to have a chance to take it out for a test drive. We provide you instructions and screen casts to help you take advantage of its rich set of features.<br><br>
+              We need some general information to setup your customer profile with our payment processor. You will be directed to their website shortly to enter your actual payment information.
+            </p>
+          </div>
+        </div>
+        <div class="form" *ngIf="needsCustomer && !submittedCustomer">
+          <form #f="ngForm" (ngSubmit)="submitCustomer()">
+            <fieldset>
+              <div class="group text-range">
+                <div class="group" style="width: 95%; margin-left: 2.5%">
+                    <input type="email" value="{{authService.user?.principal}}" disabled />
+                </div>
+              </div>
+              <div class="group text-range">
+                <div class="group" style="width: 45%; margin-left: 2.5%">
+                    <input type="text" [(ngModel)]="firstName" name="first-name" placeholder="First Name" required />
+                </div>
+                <div class="group" style="width: 45%; margin-left: 5%">
+                    <input type="text" [(ngModel)]="lastName" name="last-name" placeholder="Last Name" required />
+                </div>
+              </div>
+              <div class="group text-range">
+                <div class="group" style="width: 95%; margin-left: 2.5%">
+                    <input type="text" [(ngModel)]="companyName" name="company-name" placeholder="Company Name (Optional)" />
+                </div>
+              </div>
+              <div class="group button-group">
+                <input type="submit" class="button large" value="Continue" [disabled]="!f.valid || clickedSubmit">
+              </div>
+            </fieldset>
+          </form>
+        </div>
+      </div>
+    </div>
+    <!-- /Main content -->
+  </div>
+</div>
+<!-- /Main -->
+
+<!--
+	<div id="wrapper">
+    	<main id="main">
+            <div class="container">
+                <div class="row">
+                	<div class="col-xs-12">
+                    	<div class="form-holder">
+                            <div class="form-inner">
+                            	<div class="logo">
+                                	<a href="#"><img src="image/logo-white.c6ba38e3.svg" alt="logo"></a>
+                                </div>
+                                <form class="form-horizontal cc-info-form" action="#">
+                                    <div class="heading-holder">
+                                        <h3>Credit Card Information</h3>
+                                    </div>
+                                    <div class="form-group">
+                                    	<div class="col-xs-12">
+                                        	<input type="text" class="form-control" placeholder="Billing Address">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                    	<div class="col-xs-12">
+                                        	<input type="text" class="form-control" placeholder="City">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                    	<div class="col-xs-12">
+                                        	<select class="selectpicker location">
+                                              <option>Alabama</option>
+                                              <option>Alaska</option>
+                                              <option>Arizona</option>
+                                              <option>Arkansas</option>	
+                                              <option>California</option>
+                                              <option>Colorado</option>
+                                              <option>Connecticut</option>
+                                              <option>Delaware</option>
+                                              <option>Florida</option>
+                                              <option>Georgia</option>
+                                              <option>Hawaii</option>
+                                              <option>Idaho</option>
+                                              <option>Illinois</option>
+                                              <option>Indiana</option>
+                                              <option>Iowa</option>
+                                              <option>Kansas</option>
+                                              <option>Kentucky</option>
+                                              <option>Louisiana</option>
+                                              <option>Maine</option>
+                                              <option>Maryland</option>
+                                              <option>Massachusetts</option>
+                                              <option>Michigan</option>
+                                              <option>Minnesota</option>
+                                              <option>Mississippi</option>
+                                              <option>Missouri</option>
+                                              <option>Montana</option>
+                                              <option>Nebraska</option>
+                                              <option>Nevada</option>
+                                              <option>New Hampshire</option>
+                                              <option>New Jersey</option>
+                                              <option>New Mexico</option>
+                                              <option>New York</option>
+                                              <option>North Carolina</option>
+                                              <option>North Dakota</option>
+                                              <option>Ohio</option>
+                                              <option>Oklahoma</option>
+                                              <option>Oregon</option>
+                                              <option>Pennsylvania</option>
+                                              <option>Rhode Island[</option>
+                                              <option>South Carolina</option>
+                                              <option>South Dakota</option>
+                                              <option>Tennessee</option>
+                                              <option>Texas</option>
+                                              <option>Utah</option>
+                                              <option>Vermont</option>
+                                              <option>Virginia</option>
+                                              <option>Washington</option>
+                                              <option>West Virginia</option>
+                                              <option>Wisconsin</option>
+                                              <option>Wyoming</option>								  
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                    	<div class="col-xs-12">
+                                        	<input type="text" class="form-control" placeholder="Zip Code">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                    	<div class="col-xs-12">
+                                        	<input type="text" class="form-control" placeholder="Name on Card">
+                                        </div>
+                                    </div>
+                                    <div class="form-group clearfix">
+                                    	<div class="col-xs-10">
+                                        	<input type="text" class="form-control" placeholder="Card #">
+                                        </div>
+                                        <div class="col-xs-2 pad-left-0">
+                                        	<input type="text" class="form-control" placeholder="CCV">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                    	<div class="col-xs-12">
+                                        	<select class="selectpicker location">
+                                              <option>Card Type</option>
+                                              <option>Visa</option>
+                                              <option>Debit</option>
+                                              <option>Master Card</option>									  
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group clearfix">
+                                    	<div class="col-xs-6">
+                                        	<select class="selectpicker location">
+                                              <option>01</option>
+                                              <option>02</option>
+                                              <option>03</option>
+                                              <option>04</option>
+                                              <option>05</option>
+                                              <option>06</option>
+                                              <option>07</option>
+                                              <option>08</option>
+                                              <option>09</option>
+                                              <option>10</option>
+                                              <option>11</option>
+                                              <option>12</option>
+                                              <option>13</option>
+                                              <option>14</option>
+                                              <option>15</option>
+                                              <option>16</option>
+                                              <option>17</option>
+                                              <option>18</option>
+                                              <option>19</option>
+                                              <option>20</option>
+                                              <option>21</option>
+                                              <option>22</option>
+                                              <option>23</option>
+                                              <option>24</option>
+                                              <option>25</option>
+                                              <option>26</option>
+                                              <option>27</option>
+                                              <option>28</option>
+                                              <option>29</option>
+                                              <option>30</option>
+                                              <option>31</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-xs-6 pad-left-0">
+                                        	<select class="selectpicker location">
+                                              <option>2016</option>
+                                              <option>2017</option>
+                                              <option>2018</option>
+                                              <option>2019</option>
+                                              <option>2020</option>
+                                              <option>2021</option>
+                                              <option>2022</option>
+                                              <option>2023</option>
+                                              <option>2024</option>
+                                              <option>2025</option>
+                                              <option>2026</option>
+                                              <option>2027</option>
+                                              <option>2028</option>
+                                              <option>2029</option>
+                                              <option>2030</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                    	<div class="col-xs-12 text-center">
+                                        	<input type="submit" class="sav-btn" Value="save">
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                         </div>
+                    </div>
+                </div>
+            </div>
+         </main>
+    </div>-->

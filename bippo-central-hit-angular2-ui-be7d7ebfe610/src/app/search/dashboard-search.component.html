@@ -1,0 +1,47 @@
+<!-- Page Title -->
+<div id="page-title" class="search" [ngStyle]="{'margin-top': activeTab != 'simple' ? '-15rem' : '0'}">
+  <div class="container" [ngStyle]="{'padding-top': padding}">
+    <div style="position: absolute; left: 50%; top: 4.5rem;" *ngIf="!_plain">
+      <h1 style="position: relative; left: -50%; color: #db4128; padding: 5px; border-radius: 5px; text-align: center; font-weight: 500">Get Instant ARV</h1>
+    </div>
+    <div style="position:absolute;left: 50%;top: 5.5rem;" *ngIf="!_plain">
+      <h2 style="position: relative; left: -50%; color: #db4128; padding: 5px; border-radius: 5px">and a wide range of market analytics.</h2>
+    </div>
+    <ngb-tabset tabsId="search-tabs" tabsOnly="true" class="tab-selector" [ngClass]="{'search-tabs': _hideable, 'hidden': hidden, 'shown': !hidden}" (tabChange)="activeTab=$event.nextId; displayActiveTab()">
+      <ngb-tab title="Simple" id="simple" *ngIf="!_hideable || !hidden">
+        <template ngbTabContent>
+          <app-simple-search></app-simple-search>
+        </template>
+      </ngb-tab>
+      <ngb-tab title="MLS" id="advanced" *ngIf="!_hideable || !hidden">
+        <template ngbTabContent>
+          <app-advance-search></app-advance-search>
+        </template>
+      </ngb-tab>
+      <ngb-tab title="Saved Searches" id="saved-searches" *ngIf="!_hideable || !hidden">
+        <template ngbTabContent>
+          <app-saved-search></app-saved-search>
+        </template>
+      </ngb-tab>
+      <ngb-tab [ngClass]="{'hideable': _hideable, 'hidden': hidden}" title="-" id="toggle-hide" *ngIf="_hideable">
+        <template ngbTabContent></template>
+      </ngb-tab>
+      <ngb-tab [ngClass]="{'hideable': _hideable, 'hidden': !hidden}" title="+" id="toggle-show" *ngIf="_hideable">
+        <template ngbTabContent></template>
+      </ngb-tab>
+    </ngb-tabset>
+  </div>
+</div>
+<!-- Main -->
+<div id="main" class="section-main" *ngIf="!_hideable || !hidden" [ngStyle]="{'margin-bottom': activeTab != 'simple' ? '-5rem' : '0'}">
+  <div class="container" [ngClass]="{'opaque': activeTab != 'simple'}">
+    <!-- Main content -->
+    <div class="main-content" role="main">
+      <!-- Tab selector -->
+      <ngb-tabset-content tabsId="search-tabs"></ngb-tabset-content>
+      <!-- /Tabs -->
+    </div>
+    <!-- /Main content -->
+  </div>
+</div>
+<!-- /Main -->
